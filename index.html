@@ -249,6 +249,11 @@
                     <p class="text-xs text-slate-300 font-fun">Enter your costume or decorated trunk before voting opens at 6:00 PM!</p>
                 </div>
 
+                <!-- Closed Registration Notice Banner -->
+                <div id="registrationNotice" class="hidden bg-amber-950/80 border border-amber-500/50 p-3.5 rounded-2xl text-center font-fun text-xs text-amber-200 mb-4">
+                    🔒 Contest entries are now closed as polling has ended and official winners have been published!
+                </div>
+
                 <form id="entryForm" onsubmit="handleEntrySubmit(event)" class="space-y-4">
                     
                     <!-- Entry Type -->
@@ -549,6 +554,12 @@
         // Handle Entry Submission
         async function handleEntrySubmit(e) {
             e.preventDefault();
+
+            if (getEventStage() === 'post') {
+                showToast("Contest registration is closed now that polling has ended!", "🔒");
+                return;
+            }
+
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
             submitBtn.innerText = 'Submitting Entry...';
@@ -634,6 +645,19 @@
             const statusText = document.getElementById('statusText');
             const votingNotice = document.getElementById('votingNotice');
             const liveWinnerBadge = document.getElementById('liveWinnerBadge');
+
+            const regNotice = document.getElementById('registrationNotice');
+            const entryFormInputs = document.querySelectorAll('#entryForm input, #entryForm button[type="submit"]');
+
+            if (regNotice) {
+                if (stage === 'post') {
+                    regNotice.classList.remove('hidden');
+                    entryFormInputs.forEach(el => el.disabled = true);
+                } else {
+                    regNotice.classList.add('hidden');
+                    entryFormInputs.forEach(el => el.disabled = false);
+                }
+            }
 
             if (!statusDot || !statusText) return;
 

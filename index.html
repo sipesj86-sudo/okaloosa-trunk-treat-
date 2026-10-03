@@ -391,44 +391,67 @@
         <section id="view-winners" class="tab-content hidden">
             <div class="bg-slate-900 border-4 border-amber-500/70 rounded-3xl p-5 md:p-8 shadow-2xl relative overflow-hidden">
                 
-                <div class="text-center mb-6">
-                    <div class="inline-block bg-amber-500/10 text-amber-400 font-fun font-bold px-3 py-1 rounded-full text-xs uppercase tracking-widest mb-1.5 border border-amber-500/30">
-                        🏆 Official Results Published Automatically 🏆
+                <!-- LOCKED STATE (Before 7:30 PM) -->
+                <div id="winnersLockedView" class="text-center py-12 px-4 space-y-4">
+                    <span class="text-6xl block animate-bounce">🔒</span>
+                    <div class="inline-block bg-amber-500/10 text-amber-400 font-fun font-bold px-4 py-1.5 rounded-full text-xs uppercase tracking-widest border border-amber-500/30">
+                        Results Sealed Until 7:30 PM
                     </div>
                     <h2 class="font-spooky text-3xl md:text-5xl text-amber-400 tracking-wider">
-                        CONTEST WINNERS
+                        WINNERS PODIUM IS LOCKED
                     </h2>
-                    <p class="font-fun text-slate-300 text-xs mt-1">
-                        Congratulations to all 6th Annual Trunk or Treat participants!
+                    <p class="font-fun text-slate-300 text-xs md:text-sm max-w-lg mx-auto">
+                        Official vote tallies are sealed while polling is underway! Walk the trail, cast your votes, and check back right at <strong>7:30 PM on Oct 30, 2026</strong> when official champions are published live.
                     </p>
-                </div>
-
-                <!-- Overall Category Champions -->
-                <div class="mb-8">
-                    <h3 class="font-fun text-lg text-orange-400 mb-3 border-b border-orange-500/30 pb-1.5 flex items-center gap-2">
-                        <span>🌟</span> Category Champions
-                    </h3>
-                    <div id="categoryWinnersGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                        <!-- Populated dynamically -->
+                    <div class="pt-2">
+                        <button onclick="switchTab('vote')" class="bg-orange-500 hover:bg-orange-600 text-slate-950 font-fun font-bold px-5 py-2.5 rounded-2xl transition text-xs shadow-lg">
+                            🗳️ Go To Voting Poll
+                        </button>
                     </div>
                 </div>
 
-                <!-- Age Division Champions -->
-                <div>
-                    <h3 class="font-fun text-lg text-purple-300 mb-3 border-b border-purple-500/30 pb-1.5 flex items-center gap-2">
-                        <span>👑</span> Age Division Winners
-                    </h3>
-                    <div id="ageGroupWinnersGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                        <!-- Populated dynamically -->
+                <!-- PUBLISHED STATE (Only visible after 7:30 PM) -->
+                <div id="winnersPublishedView" class="hidden">
+                    <div class="text-center mb-6">
+                        <div class="inline-block bg-amber-500/10 text-amber-400 font-fun font-bold px-3 py-1 rounded-full text-xs uppercase tracking-widest mb-1.5 border border-amber-500/30">
+                            🏆 Official Results Published Automatically 🏆
+                        </div>
+                        <h2 class="font-spooky text-3xl md:text-5xl text-amber-400 tracking-wider">
+                            CONTEST WINNERS
+                        </h2>
+                        <p class="font-fun text-slate-300 text-xs mt-1">
+                            Congratulations to all 6th Annual Trunk or Treat participants!
+                        </p>
+                    </div>
+
+                    <!-- Overall Category Champions -->
+                    <div class="mb-8">
+                        <h3 class="font-fun text-lg text-orange-400 mb-3 border-b border-orange-500/30 pb-1.5 flex items-center gap-2">
+                            <span>🌟</span> Category Champions
+                        </h3>
+                        <div id="categoryWinnersGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Age Division Champions -->
+                    <div>
+                        <h3 class="font-fun text-lg text-purple-300 mb-3 border-b border-purple-500/30 pb-1.5 flex items-center gap-2">
+                            <span>👑</span> Age Division Winners
+                        </h3>
+                        <div id="ageGroupWinnersGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Celebration Button -->
+                    <div class="mt-6 text-center no-print">
+                        <button onclick="triggerConfetti()" class="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-fun font-bold px-5 py-2.5 rounded-2xl shadow-xl transition transform active:scale-95 inline-flex items-center gap-2 text-xs">
+                            <span>🎉</span> Celebrate Winners!
+                        </button>
                     </div>
                 </div>
 
-                <!-- Celebration Button -->
-                <div class="mt-6 text-center no-print">
-                    <button onclick="triggerConfetti()" class="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-fun font-bold px-5 py-2.5 rounded-2xl shadow-xl transition transform active:scale-95 inline-flex items-center gap-2 text-xs">
-                        <span>🎉</span> Celebrate Winners!
-                    </button>
-                </div>
             </div>
         </section>
 
@@ -477,29 +500,6 @@
     </div>
 
     <script>
-        // Global State Initialization
-        window.TARGET_EVENT_URL = "https://sipesj86-sudo.github.io/okaloosa-trunk-treat-/";
-
-        window.appState = {
-            entries: [],
-            votes: [],
-            userVotes: JSON.parse(localStorage.getItem('okaloosa_user_category_votes') || '{}'),
-            userVoteDocIds: JSON.parse(localStorage.getItem('okaloosa_user_cat_doc_ids') || '{}'),
-            currentTab: 'flyer',
-            filter: 'all',
-            timeOverride: 'auto',
-            db: null,
-            appId: typeof __app_id !== 'undefined' ? __app_id : 'okaloosa-trunk-treat-6th'
-        };
-
-        function showToast(msg, icon = '✨') {
-            const toast = document.getElementById('toastMessage');
-            if (!toast) return;
-            toast.innerText = `${icon} ${msg}`;
-            toast.classList.remove('hidden');
-            setTimeout(() => toast.classList.add('hidden'), 2500);
-        }
-
         // Tab Navigation
         function switchTab(tabId) {
             window.appState.currentTab = tabId;
@@ -515,7 +515,7 @@
                 activeBtn.className = 'px-3 py-1.5 rounded-xl transition flex items-center gap-1 bg-orange-500 text-slate-950 font-bold';
             }
 
-            if (tabId === 'winners') {
+            if (tabId === 'winners' && getEventStage() === 'post') {
                 triggerConfetti();
             }
         }
@@ -846,26 +846,26 @@
                 } else {
                     voteObj.id = 'vote_' + Date.now();
                     window.appState.votes.push(voteObj);
-                    localStorage.setItem('okaloosa_votes', JSON.stringify(window.appState.votes));
-                }
-
-                window.appState.userVotes[category] = entryId;
-                if (newDocId) window.appState.userVoteDocIds[category] = newDocId;
-
-                localStorage.setItem('okaloosa_user_category_votes', JSON.stringify(window.appState.userVotes));
-                localStorage.setItem('okaloosa_user_cat_doc_ids', JSON.stringify(window.appState.userVoteDocIds));
-                showToast(`Vote submitted for ${category}!`, '✨');
-            }
-
-            renderVotingGrid();
-            renderWinnersPodium();
-        }
-
-        // Winner Calculations
+        // Winner Calculations & Reveal Guard
         function renderWinnersPodium() {
+            const lockedView = document.getElementById('winnersLockedView');
+            const publishedView = document.getElementById('winnersPublishedView');
             const catGrid = document.getElementById('categoryWinnersGrid');
             const ageGrid = document.getElementById('ageGroupWinnersGrid');
             if (!catGrid || !ageGrid) return;
+
+            const stage = getEventStage();
+
+            // STRICT GUARD: If stage is pre-event or voting, lock the results view!
+            if (stage !== 'post') {
+                if (lockedView) lockedView.classList.remove('hidden');
+                if (publishedView) publishedView.classList.add('hidden');
+                return;
+            }
+
+            // UNLOCKED: Stage is 'post' (after 7:30 PM)
+            if (lockedView) lockedView.classList.add('hidden');
+            if (publishedView) publishedView.classList.remove('hidden');
 
             const entries = window.appState.entries || [];
             const votes = window.appState.votes || [];
@@ -907,7 +907,7 @@
                                 <h4 class="font-fun text-base text-white mb-0.5">${bestEntry.title}</h4>
                                 <p class="text-xs text-purple-300 font-fun">Participant: ${bestEntry.nickname} (${bestEntry.ageGroup} yrs)</p>
                             ` : `
-                                <p class="text-xs text-slate-400 font-fun italic py-1">TBD / Awaiting Votes</p>
+                                <p class="text-xs text-slate-400 font-fun italic py-1">No votes recorded</p>
                             `}
                         </div>
 
@@ -947,7 +947,7 @@
                                 <h4 class="font-fun text-base text-white mb-0.5">${topEntry.title}</h4>
                                 <p class="text-xs text-purple-200 font-fun">By: ${topEntry.nickname}</p>
                             ` : `
-                                <p class="text-xs text-slate-400 font-fun italic py-1">TBD / Awaiting Votes</p>
+                                <p class="text-xs text-slate-400 font-fun italic py-1">No votes recorded</p>
                             `}
                         </div>
 

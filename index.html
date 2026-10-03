@@ -244,7 +244,7 @@
         <h3 class="font-bold text-lg text-slate-100">Organizer PIN Required</h3>
         <p class="text-xs text-slate-400">Enter host PIN to unlock simulation & moderation controls.</p>
       </div>
-      <input type="password" id="pinInput" placeholder="Enter PIN (Default: 1030)" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-center text-lg font-bold tracking-widest focus:outline-none focus:border-orange-500">
+      <input type="password" id="pinInput" placeholder="Enter PIN" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-center text-lg font-bold tracking-widest focus:outline-none focus:border-orange-500">
       <div id="pin-error" class="hidden text-xs text-red-400 font-semibold">Incorrect PIN. Please try again.</div>
       <div class="flex space-x-2">
         <button onclick="closePinModal()" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-bold text-slate-300">Cancel</button>
@@ -292,7 +292,7 @@
   <script>
     // --- Application State ---
     const TARGET_URL = "https://sipesj86-sudo.github.io/okaloosa-trunk-treat-/";
-    const HOST_PIN = "1030"; // PIN for host panel
+    const HOST_PIN = "1030"; // Secret PIN for host panel
 
     const CATEGORIES = [
       "Best Overall Trunk",

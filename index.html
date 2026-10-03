@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>6th Annual Okaloosa Trail Trunk or Treat - Oct 30, 2026</title>
+    <title>6th Annual Okaloosa Trail Trunk or Treat - Event & Voting Hub</title>
     
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Google Fonts -->
@@ -46,64 +46,80 @@
         .font-body { font-family: 'Poppins', sans-serif; }
         
         @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 15px rgba(249, 115, 22, 0.4); }
-            50% { box-shadow: 0 0 30px rgba(168, 85, 247, 0.7); }
+            0%, 100% { box-shadow: 0 0 12px rgba(249, 115, 22, 0.3); }
+            50% { box-shadow: 0 0 24px rgba(168, 85, 247, 0.5); }
         }
         .glow-card { animation: pulse-glow 4s infinite alternate; }
 
+        /* STRICT SINGLE PAGE PRINT STYLES */
         @media print {
             @page {
-                size: portrait;
+                size: letter portrait;
                 margin: 0.3in;
             }
             body { 
                 background: white !important; 
-                color: black !important; 
+                color: black !important;
                 font-size: 11px !important;
             }
             .no-print { display: none !important; }
-            .print-only { display: block !important; }
             .printable-area { 
                 border: 2px solid #000 !important; 
                 box-shadow: none !important; 
                 color: black !important; 
                 background: white !important;
-                padding: 12px !important;
+                padding: 1rem !important;
                 margin: 0 !important;
-                max-width: 100% !important;
             }
-            .printable-area h2 { font-size: 2.2rem !important; line-height: 1 !important; color: #d97706 !important; }
-            .printable-area p, .printable-area span, .printable-area div { color: #000 !important; }
-            .qr-box { background: white !important; border: 1px solid #000 !important; padding: 4px !important; }
-            .qr-box canvas, .qr-box img { max-width: 110px !important; max-height: 110px !important; }
-            .banner-box { border: 1px solid #000 !important; background: #f8fafc !important; padding: 6px !important; margin-bottom: 10px !important; }
-            .grid-print { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 10px !important; margin-bottom: 10px !important; }
-            .card-print { border: 1px solid #000 !important; padding: 8px !important; background: #ffffff !important; }
+            .printable-area * {
+                color: black !important;
+                text-shadow: none !important;
+            }
+            .printable-area h2 {
+                font-size: 2.2rem !important;
+                line-height: 1.1 !important;
+                color: #d97706 !important;
+            }
+            .printable-area .bg-slate-800\/90, 
+            .printable-area .bg-slate-950\/80,
+            .printable-area .bg-gradient-to-r {
+                background: #f8fafc !important;
+                border: 1px solid #cbd5e1 !important;
+            }
+            .qr-box-print {
+                background: #ffffff !important;
+                border: 2px solid #000000 !important;
+                padding: 4px !important;
+            }
+            .qr-box-print img, .qr-box-print canvas {
+                max-width: 110px !important;
+                max-height: 110px !important;
+            }
         }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 font-body min-h-screen flex flex-col selection:bg-orange-500 selection:text-white">
 
     <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-orange-500/30 shadow-lg">
-        <div class="max-w-6xl mx-auto px-4 py-2.5 flex flex-wrap justify-between items-center gap-3">
-            <div class="flex items-center gap-3">
-                <span class="text-3xl animate-bounce">🎃</span>
+        <div class="max-w-6xl mx-auto px-4 py-2.5 flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center gap-2.5">
+                <span class="text-2xl md:text-3xl animate-bounce">🎃</span>
                 <div>
-                    <h1 class="font-spooky text-xl md:text-2xl text-orange-500 tracking-wider">OKALOOSA TRAIL 6th ANNUAL</h1>
-                    <p class="text-xs text-purple-300 font-fun">Friday, October 30, 2026 • Trunk or Treat & Contest</p>
+                    <h1 class="font-spooky text-lg md:text-2xl text-orange-500 tracking-wider leading-none">OKALOOSA TRAIL 6th ANNUAL</h1>
+                    <p class="text-[11px] text-purple-300 font-fun">Trunk or Treat • Friday, Oct 30, 2026</p>
                 </div>
             </div>
 
             <!-- Time Status Badge -->
-            <div id="statusBadge" class="bg-purple-950/80 border border-purple-500/50 px-3 py-1.5 rounded-full text-xs font-fun flex items-center gap-2">
-                <span id="statusDot" class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
+            <div id="statusBadge" class="bg-purple-950/80 border border-purple-500/50 px-3 py-1 rounded-full text-[11px] font-fun flex items-center gap-2">
+                <span id="statusDot" class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
                 <span id="statusText" class="text-purple-200">Checking Schedule...</span>
             </div>
 
             <!-- Navigation Tabs -->
-            <nav class="flex items-center gap-1 bg-slate-950/60 p-1 rounded-2xl border border-slate-800 text-xs font-fun no-print overflow-x-auto">
-                <button onclick="switchTab('flyer')" id="tab-flyer" class="px-3 py-1.5 rounded-xl transition flex items-center gap-1 text-slate-300 hover:text-white">
-                    <span>🖨️</span> <span class="hidden sm:inline">Flyer & QR</span>
+            <nav class="flex items-center gap-1 bg-slate-950/80 p-1 rounded-2xl border border-slate-800 text-xs font-fun no-print overflow-x-auto">
+                <button onclick="switchTab('flyer')" id="tab-flyer" class="px-3 py-1.5 rounded-xl transition flex items-center gap-1 bg-orange-500 text-slate-950 font-bold">
+                    <span>🖨️</span> <span>Flyer & QR</span>
                 </button>
                 <button onclick="switchTab('register')" id="tab-register" class="px-3 py-1.5 rounded-xl transition flex items-center gap-1 text-slate-300 hover:text-white">
                     <span>📝</span> <span>Enter Contest</span>
@@ -119,80 +135,84 @@
         </div>
     </header>
 
-    <main class="flex-grow max-w-5xl w-full mx-auto p-4 md:p-6">
+    <main class="flex-grow max-w-5xl w-full mx-auto p-3 md:p-6">
 
-        <!-- TAB 1: FLYER & QR CODES (Single-page optimized for print) -->
+        <!-- TAB 1: FLYER & QR CODES (PRINTABLE SINGLE PAGE) -->
         <section id="view-flyer" class="tab-content block">
             <div class="printable-area bg-slate-900 border-4 border-orange-500 rounded-3xl p-5 md:p-8 shadow-2xl relative overflow-hidden">
-                <!-- Spooky Accents -->
-                <div class="absolute -top-12 -left-12 w-40 h-40 bg-purple-600/20 rounded-full blur-3xl pointer-events-none no-print"></div>
-                <div class="absolute -bottom-12 -right-12 w-40 h-40 bg-orange-600/20 rounded-full blur-3xl pointer-events-none no-print"></div>
+                <!-- Spooky Background Accents -->
+                <div class="absolute -top-12 -left-12 w-40 h-40 bg-purple-600/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-12 -right-12 w-40 h-40 bg-orange-600/10 rounded-full blur-3xl pointer-events-none"></div>
 
+                <!-- Header Banner -->
                 <div class="text-center mb-4">
-                    <div class="inline-block bg-orange-500/10 text-orange-400 font-fun font-bold px-4 py-1 rounded-full text-xs uppercase tracking-widest mb-1 border border-orange-500/30">
-                        🎃 6th Annual Community Event 🎃
+                    <div class="inline-block bg-orange-500/10 text-orange-400 font-fun font-bold px-3 py-1 rounded-full text-[11px] uppercase tracking-widest mb-1.5 border border-orange-500/30">
+                        🎃 6th Annual Community Event • Oct 30, 2026 🎃
                     </div>
-                    <h2 class="font-spooky text-3xl md:text-5xl text-orange-500 tracking-wider mb-1">
+                    <h2 class="font-spooky text-3xl md:text-5xl text-orange-500 tracking-wider mb-0.5">
                         OKALOOSA TRAIL TRUNK OR TREAT
                     </h2>
-                    <p class="font-fun text-base md:text-lg text-purple-300">
-                        📅 <strong>Friday, October 30, 2026</strong> • Costume & Trunk Contest
+                    <p class="font-fun text-sm md:text-lg text-purple-300">
+                        Costume Contest & Decorated Trunk Decorating Competition!
                     </p>
                 </div>
 
                 <!-- Schedule Banner -->
-                <div class="banner-box bg-gradient-to-r from-purple-900/90 via-slate-800 to-orange-900/90 border-2 border-amber-400/50 rounded-2xl p-3 mb-5 text-center shadow-lg">
-                    <div class="flex flex-col md:flex-row items-center justify-around gap-2 font-fun text-xs md:text-sm">
+                <div class="bg-gradient-to-r from-purple-900/80 via-slate-800 to-orange-900/80 border border-amber-400/50 rounded-2xl p-2.5 mb-5 text-center shadow-md">
+                    <div class="flex flex-col md:flex-row items-center justify-around gap-1.5 font-fun text-xs md:text-sm">
                         <div class="flex items-center gap-1.5">
-                            <span class="text-xl">📝</span>
+                            <span class="text-base">📝</span>
                             <span><strong>Registration Open:</strong> Submit before 6:00 PM</span>
                         </div>
                         <div class="hidden md:block text-slate-500">|</div>
                         <div class="flex items-center gap-1.5 text-amber-300">
-                            <span class="text-xl">⏰</span>
+                            <span class="text-base">⏰</span>
                             <span><strong>Voting Window:</strong> 6:00 PM – 7:30 PM</span>
                         </div>
                         <div class="hidden md:block text-slate-500">|</div>
                         <div class="flex items-center gap-1.5 text-emerald-300">
-                            <span class="text-xl">🏆</span>
+                            <span class="text-base">🏆</span>
                             <span><strong>Winners Announced:</strong> 7:30 PM</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- QR Codes Grid -->
-                <div class="grid-print grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
                     <!-- ENTRY QR CARD -->
-                    <div class="card-print bg-slate-800/90 border-2 border-purple-500/50 rounded-2xl p-4 text-center flex flex-col items-center justify-between">
-                        <div class="bg-purple-600 text-white font-fun text-[11px] font-bold uppercase px-3 py-0.5 rounded-full mb-2">
+                    <div class="bg-slate-800/90 border-2 border-purple-500/50 rounded-2xl p-4 text-center flex flex-col items-center justify-between">
+                        <div class="bg-purple-600 text-white font-fun text-[11px] font-bold uppercase px-3 py-0.5 rounded-full mb-1.5">
                             Step 1: Enter Contest
                         </div>
-                        <h3 class="font-fun text-lg text-purple-300 mb-1">Register Costume or Trunk</h3>
-                        <p class="text-[11px] text-slate-300 mb-2">Scan QR code below to submit your entry!</p>
+                        <h3 class="font-fun text-lg text-purple-300 mb-1">Register Your Costume or Trunk</h3>
+                        <p class="text-xs text-slate-300 mb-3">Scan QR code to submit your entry before 6:00 PM!</p>
                         
-                        <div class="qr-box bg-white p-2.5 rounded-2xl shadow-lg border-2 border-purple-300 mb-2">
-                            <div id="qrcode-register" class="flex justify-center"></div>
+                        <!-- QR Container -->
+                        <div class="qr-box-print bg-white p-2.5 rounded-2xl shadow-lg border-2 border-purple-300 mb-2 flex justify-center">
+                            <div id="qrcode-register"></div>
                         </div>
-                        <span class="text-[10px] text-purple-300 font-mono">Accepting All Age Divisions</span>
+                        <span class="text-[10px] text-purple-300 font-mono">Scan on phone to enter</span>
                     </div>
 
                     <!-- VOTING QR CARD -->
-                    <div class="card-print bg-slate-800/90 border-2 border-orange-500/50 rounded-2xl p-4 text-center flex flex-col items-center justify-between">
-                        <div class="bg-orange-500 text-slate-950 font-fun text-[11px] font-bold uppercase px-3 py-0.5 rounded-full mb-2">
+                    <div class="bg-slate-800/90 border-2 border-orange-500/50 rounded-2xl p-4 text-center flex flex-col items-center justify-between">
+                        <div class="bg-orange-500 text-slate-950 font-fun text-[11px] font-bold uppercase px-3 py-0.5 rounded-full mb-1.5">
                             Step 2: Cast Your Votes
                         </div>
                         <h3 class="font-fun text-lg text-orange-400 mb-1">Vote For Favorites (6p-7:30p)</h3>
-                        <p class="text-[11px] text-slate-300 mb-2">Walk the trail then scan to vote for best entries!</p>
+                        <p class="text-xs text-slate-300 mb-3">Walk the trail, preview entries, then scan to vote!</p>
                         
-                        <div class="qr-box bg-white p-2.5 rounded-2xl shadow-lg border-2 border-orange-300 mb-2">
-                            <div id="qrcode-vote" class="flex justify-center"></div>
+                        <!-- QR Container -->
+                        <div class="qr-box-print bg-white p-2.5 rounded-2xl shadow-lg border-2 border-orange-300 mb-2 flex justify-center">
+                            <div id="qrcode-vote"></div>
                         </div>
-                        <span class="text-[10px] text-orange-300 font-mono">Polls Close Strictly at 7:30 PM</span>
+                        <span class="text-[10px] text-orange-300 font-mono">Polls close strictly at 7:30 PM</span>
                     </div>
                 </div>
 
+                <!-- Age Brackets & Categories -->
                 <div class="bg-slate-950/80 border border-slate-700 rounded-2xl p-3 text-center">
-                    <h4 class="font-fun text-amber-400 text-xs mb-1.5 uppercase tracking-wide">🏆 Age Divisions & Contest Categories</h4>
+                    <h4 class="font-fun text-amber-400 text-xs mb-1.5 uppercase tracking-wide">🏆 Age Divisions & Award Categories</h4>
                     <div class="flex flex-wrap justify-center gap-1.5 text-[11px] mb-2">
                         <span class="bg-purple-900/60 text-purple-200 px-2 py-0.5 rounded-lg border border-purple-500/30">👶 3-0 yrs</span>
                         <span class="bg-purple-900/60 text-purple-200 px-2 py-0.5 rounded-lg border border-purple-500/30">👦 6-4 yrs</span>
@@ -210,9 +230,10 @@
                     </div>
                 </div>
 
+                <!-- Printable Footer -->
                 <div class="mt-4 pt-3 border-t border-slate-800 flex flex-wrap justify-between items-center text-xs text-slate-400 no-print">
                     <div>📍 <strong>Location:</strong> Okaloosa Trail Community Grounds</div>
-                    <button onclick="window.print()" class="bg-orange-500 hover:bg-orange-600 text-slate-950 font-fun font-bold px-4 py-2 rounded-xl transition flex items-center gap-2">
+                    <button onclick="window.print()" class="bg-orange-500 hover:bg-orange-600 text-slate-950 font-fun font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5">
                         <span>🖨️</span> Print Event Flyer (1 Page)
                     </button>
                 </div>
@@ -221,128 +242,141 @@
 
         <!-- TAB 2: PARTICIPANT ENTRY FORM -->
         <section id="view-register" class="tab-content hidden">
-            <div class="bg-slate-900 border-2 border-purple-500/50 rounded-3xl p-6 md:p-8 shadow-xl max-w-2xl mx-auto">
-                <div class="text-center mb-6">
-                    <span class="text-4xl">🎭</span>
-                    <h2 class="font-spooky text-3xl text-purple-400 tracking-wide mt-2">Contest Entry Form</h2>
-                    <p class="text-xs text-slate-300 font-fun">Enter your costume or decorated trunk before voting opens at 6:00 PM on Oct 30, 2026!</p>
+            <div class="bg-slate-900 border-2 border-purple-500/50 rounded-3xl p-5 md:p-8 shadow-xl max-w-2xl mx-auto">
+                <div class="text-center mb-5">
+                    <span class="text-3xl">🎭</span>
+                    <h2 class="font-spooky text-3xl text-purple-400 tracking-wide mt-1">Contest Entry Form</h2>
+                    <p class="text-xs text-slate-300 font-fun">Enter your costume or decorated trunk before voting opens at 6:00 PM!</p>
                 </div>
 
-                <form id="entryForm" onsubmit="handleEntrySubmit(event)" class="space-y-5">
+                <form id="entryForm" onsubmit="handleEntrySubmit(event)" class="space-y-4">
+                    
+                    <!-- Entry Type -->
                     <div>
-                        <label class="block font-fun text-xs text-purple-300 uppercase mb-2">1. What are you entering? *</label>
+                        <label class="block font-fun text-xs text-purple-300 uppercase mb-1.5">1. What are you entering? *</label>
                         <div class="grid grid-cols-2 gap-3">
                             <label class="cursor-pointer">
                                 <input type="radio" name="entryType" value="Costume" checked class="peer hidden" onchange="updateFormPlaceholders()">
-                                <div class="bg-slate-800 border-2 border-slate-700 peer-checked:border-purple-500 peer-checked:bg-purple-950/40 p-3 rounded-2xl text-center font-fun transition">
-                                    <span class="text-2xl block mb-1">👻</span>
-                                    <span class="text-sm">Costume</span>
+                                <div class="bg-slate-800 border-2 border-slate-700 peer-checked:border-purple-500 peer-checked:bg-purple-950/40 p-2.5 rounded-2xl text-center font-fun transition">
+                                    <span class="text-xl block mb-0.5">👻</span>
+                                    <span class="text-xs">Costume</span>
                                 </div>
                             </label>
                             <label class="cursor-pointer">
                                 <input type="radio" name="entryType" value="Trunk" class="peer hidden" onchange="updateFormPlaceholders()">
-                                <div class="bg-slate-800 border-2 border-slate-700 peer-checked:border-orange-500 peer-checked:bg-orange-950/40 p-3 rounded-2xl text-center font-fun transition">
-                                    <span class="text-2xl block mb-1">🚗</span>
-                                    <span class="text-sm">Decorated Trunk</span>
+                                <div class="bg-slate-800 border-2 border-slate-700 peer-checked:border-orange-500 peer-checked:bg-orange-950/40 p-2.5 rounded-2xl text-center font-fun transition">
+                                    <span class="text-xl block mb-0.5">🚗</span>
+                                    <span class="text-xs">Decorated Trunk</span>
                                 </div>
                             </label>
                         </div>
                     </div>
 
+                    <!-- Nickname / Name -->
                     <div>
-                        <label for="nickname" class="block font-fun text-xs text-purple-300 uppercase mb-1">2. Nickname or Name *</label>
+                        <label for="nickname" class="block font-fun text-xs text-purple-300 uppercase mb-1">2. Participant Nickname or Name *</label>
                         <input type="text" id="nickname" required placeholder="e.g. Spooky Sam, The Smith Family" 
-                            class="w-full bg-slate-800 border border-slate-700 focus:border-purple-500 rounded-xl px-4 py-2.5 text-sm outline-none transition">
-                        <p class="text-[11px] text-slate-400 mt-1">This name will be displayed publicly on the voting poll.</p>
+                            class="w-full bg-slate-800 border border-slate-700 focus:border-purple-500 rounded-xl px-3.5 py-2 text-xs text-white outline-none transition">
                     </div>
 
+                    <!-- Costume / Trunk Title -->
                     <div>
                         <label for="title" id="titleLabel" class="block font-fun text-xs text-purple-300 uppercase mb-1">3. Costume Title *</label>
                         <input type="text" id="title" required placeholder="e.g. Wicked Witch of Okaloosa, Haunted Pirate Ship" 
-                            class="w-full bg-slate-800 border border-slate-700 focus:border-purple-500 rounded-xl px-4 py-2.5 text-sm outline-none transition">
+                            class="w-full bg-slate-800 border border-slate-700 focus:border-purple-500 rounded-xl px-3.5 py-2 text-xs text-white outline-none transition">
                     </div>
 
+                    <!-- Age Range Division -->
                     <div>
-                        <label class="block font-fun text-xs text-purple-300 uppercase mb-2">4. Age Group Division *</label>
+                        <label class="block font-fun text-xs text-purple-300 uppercase mb-1.5">4. Age Group Division *</label>
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
                             <label class="cursor-pointer">
                                 <input type="radio" name="ageGroup" value="3-0" checked class="peer hidden">
-                                <div class="bg-slate-800 border border-slate-700 peer-checked:border-purple-400 peer-checked:bg-purple-900/50 p-2.5 rounded-xl text-center text-xs font-fun">
+                                <div class="bg-slate-800 border border-slate-700 peer-checked:border-purple-400 peer-checked:bg-purple-900/50 p-2 rounded-xl text-center text-xs font-fun">
                                     👶 3-0 years
                                 </div>
                             </label>
                             <label class="cursor-pointer">
                                 <input type="radio" name="ageGroup" value="6-4" class="peer hidden">
-                                <div class="bg-slate-800 border border-slate-700 peer-checked:border-purple-400 peer-checked:bg-purple-900/50 p-2.5 rounded-xl text-center text-xs font-fun">
+                                <div class="bg-slate-800 border border-slate-700 peer-checked:border-purple-400 peer-checked:bg-purple-900/50 p-2 rounded-xl text-center text-xs font-fun">
                                     👦 6-4 years
                                 </div>
                             </label>
                             <label class="cursor-pointer">
                                 <input type="radio" name="ageGroup" value="12-7" class="peer hidden">
-                                <div class="bg-slate-800 border border-slate-700 peer-checked:border-purple-400 peer-checked:bg-purple-900/50 p-2.5 rounded-xl text-center text-xs font-fun">
+                                <div class="bg-slate-800 border border-slate-700 peer-checked:border-purple-400 peer-checked:bg-purple-900/50 p-2 rounded-xl text-center text-xs font-fun">
                                     🧒 12-7 years
                                 </div>
                             </label>
                             <label class="cursor-pointer">
                                 <input type="radio" name="ageGroup" value="17-13" class="peer hidden">
-                                <div class="bg-slate-800 border border-slate-700 peer-checked:border-purple-400 peer-checked:bg-purple-900/50 p-2.5 rounded-xl text-center text-xs font-fun">
+                                <div class="bg-slate-800 border border-slate-700 peer-checked:border-purple-400 peer-checked:bg-purple-900/50 p-2 rounded-xl text-center text-xs font-fun">
                                     🧑 17-13 years
                                 </div>
                             </label>
                             <label class="cursor-pointer col-span-2 sm:col-span-1">
                                 <input type="radio" name="ageGroup" value="Adults" class="peer hidden">
-                                <div class="bg-slate-800 border border-slate-700 peer-checked:border-purple-400 peer-checked:bg-purple-900/50 p-2.5 rounded-xl text-center text-xs font-fun">
+                                <div class="bg-slate-800 border border-slate-700 peer-checked:border-purple-400 peer-checked:bg-purple-900/50 p-2 rounded-xl text-center text-xs font-fun">
                                     👑 Adults / Trunk
                                 </div>
                             </label>
                         </div>
                     </div>
 
+                    <!-- Photo Upload -->
                     <div>
                         <label class="block font-fun text-xs text-purple-300 uppercase mb-1">5. Entry Photo (Optional)</label>
-                        <div class="flex items-center gap-4 bg-slate-800 border border-slate-700 rounded-xl p-3">
+                        <div class="flex items-center gap-3 bg-slate-800 border border-slate-700 rounded-xl p-2.5">
                             <input type="file" id="photoInput" accept="image/*" onchange="previewImage(event)" class="hidden">
                             <button type="button" onclick="document.getElementById('photoInput').click()" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-fun transition">
-                                📷 Choose Photo
+                                📷 Attach Photo
                             </button>
-                            <span id="photoFileName" class="text-xs text-slate-400 truncate max-w-[180px]">No photo attached</span>
-                            <div id="photoPreviewContainer" class="hidden w-10 h-10 rounded-lg overflow-hidden border border-purple-400 ml-auto flex-shrink-0">
+                            <span id="photoFileName" class="text-xs text-slate-400 truncate max-w-[160px]">No photo selected</span>
+                            <div id="photoPreviewContainer" class="hidden w-8 h-8 rounded-lg overflow-hidden border border-purple-400 ml-auto flex-shrink-0">
                                 <img id="photoPreview" class="w-full h-full object-cover" src="" alt="Preview">
                             </div>
                         </div>
                     </div>
 
-                    <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-purple-600 to-orange-500 hover:from-purple-500 hover:to-orange-400 text-white font-fun font-bold py-3.5 rounded-2xl shadow-lg transition transform active:scale-95 text-base flex justify-center items-center gap-2">
-                        <span>✨ Submit Contest Entry</span>
+                    <!-- Submit Button -->
+                    <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-purple-600 to-orange-500 hover:from-purple-500 hover:to-orange-400 text-white font-fun font-bold py-3 rounded-2xl shadow-lg transition transform active:scale-95 text-sm flex justify-center items-center gap-2">
+                        <span>✨ Register Entry</span>
                     </button>
                 </form>
 
-                <div id="entryAlert" class="hidden mt-4 p-4 rounded-xl font-fun text-sm text-center"></div>
+                <div id="entryAlert" class="hidden mt-4 p-3 rounded-xl font-fun text-xs text-center"></div>
             </div>
         </section>
 
         <!-- TAB 3: LIVE VOTING POLL -->
         <section id="view-vote" class="tab-content hidden">
-            <div class="space-y-6">
-                <div class="bg-slate-900 border-2 border-orange-500/60 rounded-3xl p-6 text-center shadow-xl">
-                    <span class="text-4xl">🗳️</span>
-                    <h2 class="font-spooky text-3xl text-orange-400 tracking-wide mt-1">Official Contest Voting Poll</h2>
+            <div class="space-y-5">
+                <!-- Voting Window Status Header -->
+                <div class="bg-slate-900 border-2 border-orange-500/60 rounded-3xl p-5 text-center shadow-xl">
+                    <span class="text-3xl">🗳️</span>
+                    <h2 class="font-spooky text-2xl md:text-3xl text-orange-400 tracking-wide mt-0.5">Official Contest Voting Poll</h2>
                     <p class="text-xs text-slate-300 font-fun max-w-lg mx-auto mt-1">
-                        Cast your vote for your favorite trunks and costumes! Voting window strictly runs on <strong>October 30, 2026, from 6:00 PM to 7:30 PM</strong>.
+                        Select an entry to award 1 vote per category! Voting window is strictly <strong>6:00 PM to 7:30 PM on Oct 30, 2026</strong>.
                     </p>
 
-                    <div class="mt-4 flex flex-wrap justify-center gap-2 text-xs font-fun">
-                        <button onclick="filterVoting('all')" id="filter-all" class="filter-btn bg-orange-500 text-slate-950 font-bold px-3 py-1.5 rounded-xl">All Entries</button>
-                        <button onclick="filterVoting('Costume')" id="filter-Costume" class="filter-btn bg-slate-800 text-slate-300 px-3 py-1.5 rounded-xl border border-slate-700">Costumes</button>
-                        <button onclick="filterVoting('Trunk')" id="filter-Trunk" class="filter-btn bg-slate-800 text-slate-300 px-3 py-1.5 rounded-xl border border-slate-700">Trunks</button>
+                    <!-- Filter Tabs -->
+                    <div class="mt-3 flex flex-wrap justify-center gap-2 text-xs font-fun">
+                        <button onclick="filterVoting('all')" id="filter-all" class="filter-btn bg-orange-500 text-slate-950 font-bold px-3 py-1 rounded-xl">All Entries</button>
+                        <button onclick="filterVoting('Costume')" id="filter-Costume" class="filter-btn bg-slate-800 text-slate-300 px-3 py-1 rounded-xl border border-slate-700">Costumes Only</button>
+                        <button onclick="filterVoting('Trunk')" id="filter-Trunk" class="filter-btn bg-slate-800 text-slate-300 px-3 py-1 rounded-xl border border-slate-700">Trunks Only</button>
                     </div>
                 </div>
 
-                <div id="votingNotice" class="hidden bg-amber-950/80 border border-amber-500/50 p-4 rounded-2xl text-center font-fun text-xs text-amber-200">
-                    🔒 Voting is currently locked. Voting opens on Oct 30 at 6:00 PM and closes strictly at 7:30 PM.
+                <!-- Closed Notice -->
+                <div id="votingNotice" class="hidden bg-amber-950/80 border border-amber-500/50 p-3 rounded-2xl text-center font-fun text-xs text-amber-200">
+                    🔒 Voting is currently locked. Polling opens Oct 30 between 6:00 PM and 7:30 PM.
                 </div>
 
-                <div id="votingGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <!-- Toast Message -->
+                <div id="toastMessage" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-orange-500 text-slate-950 font-fun text-xs font-bold px-4 py-2 rounded-full shadow-2xl transition"></div>
+
+                <!-- Entries Card Grid -->
+                <div id="votingGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     <!-- Populated dynamically via JS -->
                 </div>
             </div>
@@ -350,40 +384,44 @@
 
         <!-- TAB 4: WINNERS PODIUM & RESULTS BOARD -->
         <section id="view-winners" class="tab-content hidden">
-            <div class="bg-slate-900 border-4 border-amber-500/70 rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
-                <div class="text-center mb-8">
-                    <div class="inline-block bg-amber-500/10 text-amber-400 font-fun font-bold px-4 py-1 rounded-full text-xs uppercase tracking-widest mb-2 border border-amber-500/30">
+            <div class="bg-slate-900 border-4 border-amber-500/70 rounded-3xl p-5 md:p-8 shadow-2xl relative overflow-hidden">
+                
+                <div class="text-center mb-6">
+                    <div class="inline-block bg-amber-500/10 text-amber-400 font-fun font-bold px-3 py-1 rounded-full text-xs uppercase tracking-widest mb-1.5 border border-amber-500/30">
                         🏆 Official Results Published Automatically 🏆
                     </div>
-                    <h2 class="font-spooky text-4xl md:text-6xl text-amber-400 tracking-wider">
+                    <h2 class="font-spooky text-3xl md:text-5xl text-amber-400 tracking-wider">
                         CONTEST WINNERS
                     </h2>
-                    <p class="font-fun text-slate-300 text-sm mt-1">
-                        Congratulations to all our 6th Annual Trunk or Treat participants! (Oct 30, 2026)
+                    <p class="font-fun text-slate-300 text-xs mt-1">
+                        Congratulations to all 6th Annual Trunk or Treat participants!
                     </p>
                 </div>
 
-                <div class="mb-10">
-                    <h3 class="font-fun text-xl text-orange-400 mb-4 border-b border-orange-500/30 pb-2 flex items-center gap-2">
+                <!-- Overall Category Champions -->
+                <div class="mb-8">
+                    <h3 class="font-fun text-lg text-orange-400 mb-3 border-b border-orange-500/30 pb-1.5 flex items-center gap-2">
                         <span>🌟</span> Category Champions
                     </h3>
-                    <div id="categoryWinnersGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div id="categoryWinnersGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         <!-- Populated dynamically -->
                     </div>
                 </div>
 
+                <!-- Age Division Champions -->
                 <div>
-                    <h3 class="font-fun text-xl text-purple-300 mb-4 border-b border-purple-500/30 pb-2 flex items-center gap-2">
+                    <h3 class="font-fun text-lg text-purple-300 mb-3 border-b border-purple-500/30 pb-1.5 flex items-center gap-2">
                         <span>👑</span> Age Division Winners
                     </h3>
-                    <div id="ageGroupWinnersGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div id="ageGroupWinnersGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         <!-- Populated dynamically -->
                     </div>
                 </div>
 
-                <div class="mt-8 text-center no-print">
-                    <button onclick="triggerConfetti()" class="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-fun font-bold px-6 py-3 rounded-2xl shadow-xl transition transform active:scale-95 inline-flex items-center gap-2">
-                        <span>🎉</span> Celebrate Winners Again!
+                <!-- Celebration Button -->
+                <div class="mt-6 text-center no-print">
+                    <button onclick="triggerConfetti()" class="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-fun font-bold px-5 py-2.5 rounded-2xl shadow-xl transition transform active:scale-95 inline-flex items-center gap-2 text-xs">
+                        <span>🎉</span> Celebrate Winners!
                     </button>
                 </div>
             </div>
@@ -391,33 +429,33 @@
 
     </main>
 
-    <!-- Host Control Panel Trigger Button -->
+    <!-- Host Control Gear (Bottom Right) -->
     <div class="fixed bottom-4 right-4 z-50 no-print">
-        <button onclick="toggleAdminModal()" class="bg-slate-800 border border-orange-500/50 hover:border-orange-400 text-orange-400 p-3 rounded-full shadow-2xl transition hover:rotate-45" title="Event Host Controls">
+        <button onclick="toggleAdminModal()" class="bg-slate-800 border border-orange-500/50 hover:border-orange-400 text-orange-400 p-2.5 rounded-full shadow-2xl transition hover:rotate-45 text-sm" title="Event Host Controls">
             ⚙️
         </button>
     </div>
 
-    <!-- Host Control Panel Modal -->
-    <div id="adminModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border-2 border-orange-500 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="font-fun text-lg text-orange-400 flex items-center gap-2">
+    <!-- Admin / Host Override Modal -->
+    <div id="adminModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 no-print">
+        <div class="bg-slate-900 border-2 border-orange-500 rounded-3xl p-5 max-w-md w-full shadow-2xl space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
+                <h3 class="font-fun text-base text-orange-400 flex items-center gap-1.5">
                     <span>⚙️</span> Event Host Control Panel
                 </h3>
-                <button onclick="toggleAdminModal()" class="text-slate-400 hover:text-white font-bold">✕</button>
+                <button onclick="toggleAdminModal()" class="text-slate-400 hover:text-white font-bold text-sm">✕</button>
             </div>
 
             <p class="text-xs text-slate-300 font-fun">
-                Use these controls to simulate different stages of the event during testing or override time locks.
+                Use these controls to simulate different stages of the event during testing.
             </p>
 
             <div>
-                <label class="block font-fun text-xs text-purple-300 uppercase mb-2">Simulate Event Clock Mode</label>
-                <select id="timeOverrideSelect" onchange="handleTimeOverrideChange()" class="w-full bg-slate-800 border border-slate-700 text-xs font-fun text-white px-3 py-2.5 rounded-xl outline-none">
-                    <option value="auto">⏱️ Automatic Schedule (Date & Time aware)</option>
-                    <option value="pre">📝 Pre-Event (Registration Open, Voting Locked)</option>
-                    <option value="voting">🗳️ Voting Open (6:00 PM - 7:30 PM Live Mode)</option>
+                <label class="block font-fun text-xs text-purple-300 uppercase mb-1.5">Simulate Clock Mode</label>
+                <select id="timeOverrideSelect" onchange="handleTimeOverrideChange()" class="w-full bg-slate-800 border border-slate-700 text-xs font-fun text-white px-3 py-2 rounded-xl outline-none">
+                    <option value="auto">⏱️ Real-Time Calendar Clock (Oct 30, 2026 Mode)</option>
+                    <option value="pre">📝 Pre-Event (Registration Open, Voting Closed)</option>
+                    <option value="voting">🗳️ Active Voting Mode (6:00 PM - 7:30 PM)</option>
                     <option value="post">🏆 Post-Event (7:30 PM+ Winners Published!)</option>
                 </select>
             </div>
@@ -427,30 +465,21 @@
                     ➕ Load Sample Demo Entries
                 </button>
                 <button onclick="resetData()" class="bg-red-950/60 hover:bg-red-800 text-red-200 text-xs font-fun px-3 py-2 rounded-xl transition">
-                    🗑️ Reset All Data
+                    🗑️ Clear All Data
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Custom Toast -->
-    <div id="toastNotification" class="fixed top-5 right-5 z-50 hidden bg-slate-900 border border-orange-500 text-slate-100 font-fun text-xs px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 transition-all duration-300">
-        <span id="toastIcon">ℹ️</span>
-        <span id="toastMessage">Notification</span>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Permanent Hardcoded Website Link
+    <script>
+        // Global State Initialization
         window.TARGET_EVENT_URL = "https://sipesj86-sudo.github.io/okaloosa-trunk-treat-/";
 
         window.appState = {
             entries: [],
             votes: [],
-            userVotes: JSON.parse(localStorage.getItem('okaloosa_user_votes') || '{}'),
+            userVotes: JSON.parse(localStorage.getItem('okaloosa_user_category_votes') || '{}'),
+            userVoteDocIds: JSON.parse(localStorage.getItem('okaloosa_user_cat_doc_ids') || '{}'),
             currentTab: 'flyer',
             filter: 'all',
             timeOverride: 'auto',
@@ -458,147 +487,27 @@
             appId: typeof __app_id !== 'undefined' ? __app_id : 'okaloosa-trunk-treat-6th'
         };
 
-        let db = null;
-        let auth = null;
-
-        try {
-            if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-                const firebaseConfig = JSON.parse(__firebase_config);
-                const app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-                window.appState.db = db;
-
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-
-                const entriesRef = collection(db, 'artifacts', window.appState.appId, 'public', 'data', 'entries');
-                const votesRef = collection(db, 'artifacts', window.appState.appId, 'public', 'data', 'votes');
-
-                onSnapshot(entriesRef, (snapshot) => {
-                    const items = [];
-                    snapshot.forEach((doc) => items.push({ id: doc.id, ...doc.data() }));
-                    window.appState.entries = items;
-                    renderVotingGrid();
-                    renderWinnersPodium();
-                });
-
-                onSnapshot(votesRef, (snapshot) => {
-                    const votesList = [];
-                    snapshot.forEach((doc) => votesList.push({ id: doc.id, ...doc.data() }));
-                    window.appState.votes = votesList;
-                    renderVotingGrid();
-                    renderWinnersPodium();
-                });
-
-            } else {
-                useLocalStorageFallback();
-            }
-        } catch (e) {
-            useLocalStorageFallback();
-        }
-
-        function useLocalStorageFallback() {
-            window.appState.entries = JSON.parse(localStorage.getItem('okaloosa_entries') || '[]');
-            window.appState.votes = JSON.parse(localStorage.getItem('okaloosa_votes') || '[]');
-            if (window.appState.entries.length === 0) {
-                generateSampleEntriesInternal();
-            }
-            renderVotingGrid();
-            renderWinnersPodium();
-        }
-
-        window.saveEntry = async function(newEntry) {
-            if (window.appState.db) {
-                const entriesRef = collection(window.appState.db, 'artifacts', window.appState.appId, 'public', 'data', 'entries');
-                await addDoc(entriesRef, newEntry);
-            } else {
-                newEntry.id = 'entry_' + Date.now();
-                window.appState.entries.push(newEntry);
-                localStorage.setItem('okaloosa_entries', JSON.stringify(window.appState.entries));
-                renderVotingGrid();
-                renderWinnersPodium();
-            }
-        };
-
-        window.saveVote = async function(voteObj) {
-            if (window.appState.db) {
-                const votesRef = collection(window.appState.db, 'artifacts', window.appState.appId, 'public', 'data', 'votes');
-                await addDoc(votesRef, voteObj);
-            } else {
-                voteObj.id = 'vote_' + Date.now();
-                window.appState.votes.push(voteObj);
-                localStorage.setItem('okaloosa_votes', JSON.stringify(window.appState.votes));
-                renderVotingGrid();
-                renderWinnersPodium();
-            }
-        };
-
-        function generateSampleEntriesInternal() {
-            const samples = [
-                { id: 's1', nickname: 'The Skeleton Crew', title: 'Graveyard Express Trunk', entryType: 'Trunk', ageGroup: 'Adults', photo: '', category: 'Best Overall Trunk' },
-                { id: 's2', nickname: 'Little Witch Mia', title: 'Glitter Witch', entryType: 'Costume', ageGroup: '3-0', photo: '', category: 'Spookiest Costume' },
-                { id: 's3', nickname: 'Leo the Dinosaur', title: 'Inflatable T-Rex', entryType: 'Costume', ageGroup: '6-4', photo: '', category: 'Funniest Costume' },
-                { id: 's4', nickname: 'Crafty Chloe', title: 'Cardboard Robot', entryType: 'Costume', ageGroup: '12-7', photo: '', category: 'Most Creative DIY' },
-                { id: 's5', nickname: 'The Addams Family', title: 'Haunted Mansion SUV', entryType: 'Trunk', ageGroup: 'Adults', photo: '', category: 'Best Group / Family' },
-                { id: 's6', nickname: 'Teen Ghoul Jake', title: 'Shadow Reaper', entryType: 'Costume', ageGroup: '17-13', photo: '', category: 'Spookiest Costume' }
-            ];
-            window.appState.entries = samples;
-            localStorage.setItem('okaloosa_entries', JSON.stringify(samples));
-        }
-
-        window.generateSampleEntries = function() {
-            generateSampleEntriesInternal();
-            renderVotingGrid();
-            renderWinnersPodium();
-            showToast('Sample demo entries loaded!', '🎉');
-        };
-
-        window.resetData = function() {
-            window.appState.entries = [];
-            window.appState.votes = [];
-            window.appState.userVotes = {};
-            localStorage.removeItem('okaloosa_entries');
-            localStorage.removeItem('okaloosa_votes');
-            localStorage.removeItem('okaloosa_user_votes');
-            renderVotingGrid();
-            renderWinnersPodium();
-            showToast('Data reset complete.', '🗑️');
-        };
-    </script>
-
-    <script>
-        function showToast(message, icon = 'ℹ️') {
-            const toast = document.getElementById('toastNotification');
-            const msgEl = document.getElementById('toastMessage');
-            const iconEl = document.getElementById('toastIcon');
-            if (!toast || !msgEl || !iconEl) return;
-
-            iconEl.innerText = icon;
-            msgEl.innerText = message;
+        function showToast(msg, icon = '✨') {
+            const toast = document.getElementById('toastMessage');
+            if (!toast) return;
+            toast.innerText = `${icon} ${msg}`;
             toast.classList.remove('hidden');
-
-            setTimeout(() => {
-                toast.classList.add('hidden');
-            }, 3500);
+            setTimeout(() => toast.classList.add('hidden'), 2500);
         }
 
+        // Tab Navigation
         function switchTab(tabId) {
             window.appState.currentTab = tabId;
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById('view-' + tabId).classList.remove('hidden');
+            const target = document.getElementById('view-' + tabId);
+            if (target) target.classList.remove('hidden');
 
             document.querySelectorAll('nav button').forEach(btn => {
-                btn.classList.remove('bg-orange-500', 'text-slate-950', 'font-bold');
-                btn.classList.add('text-slate-300');
+                btn.className = 'px-3 py-1.5 rounded-xl transition flex items-center gap-1 text-slate-300 hover:text-white';
             });
             const activeBtn = document.getElementById('tab-' + tabId);
             if (activeBtn) {
-                activeBtn.classList.add('bg-orange-500', 'text-slate-950', 'font-bold');
-                activeBtn.classList.remove('text-slate-300');
+                activeBtn.className = 'px-3 py-1.5 rounded-xl transition flex items-center gap-1 bg-orange-500 text-slate-950 font-bold';
             }
 
             if (tabId === 'winners') {
@@ -606,6 +515,7 @@
             }
         }
 
+        // Form Image Preview
         let uploadedPhotoBase64 = '';
         function previewImage(e) {
             const file = e.target.files[0];
@@ -622,7 +532,8 @@
         }
 
         function updateFormPlaceholders() {
-            const entryType = document.querySelector('input[name="entryType"]:checked').value;
+            const selectedRadio = document.querySelector('input[name="entryType"]:checked');
+            const entryType = selectedRadio ? selectedRadio.value : 'Costume';
             const titleLabel = document.getElementById('titleLabel');
             const titleInput = document.getElementById('title');
 
@@ -635,6 +546,7 @@
             }
         }
 
+        // Handle Entry Submission
         async function handleEntrySubmit(e) {
             e.preventDefault();
             const submitBtn = document.getElementById('submitBtn');
@@ -650,6 +562,7 @@
             const ageGroup = document.querySelector('input[name="ageGroup"]:checked').value;
 
             const newEntry = {
+                id: 'entry_' + Date.now(),
                 nickname,
                 title,
                 entryType,
@@ -659,65 +572,59 @@
             };
 
             try {
-                await window.saveEntry(newEntry);
-                alertBox.className = "mt-4 p-4 rounded-xl font-fun text-xs text-center bg-emerald-950 border border-emerald-500 text-emerald-200";
-                alertBox.innerText = "🎉 Entry registered successfully! Voting opens on Oct 30 between 6:00 PM and 7:30 PM!";
+                if (window.saveEntry) {
+                    await window.saveEntry(newEntry);
+                } else {
+                    window.appState.entries.push(newEntry);
+                    localStorage.setItem('okaloosa_entries', JSON.stringify(window.appState.entries));
+                    renderVotingGrid();
+                    renderWinnersPodium();
+                }
+
+                alertBox.className = "mt-4 p-3 rounded-xl font-fun text-xs text-center bg-emerald-950 border border-emerald-500 text-emerald-200";
+                alertBox.innerText = "🎉 Entry registered! Head over to the Voting tab between 6:00 PM and 7:30 PM!";
                 alertBox.classList.remove('hidden');
 
                 document.getElementById('entryForm').reset();
                 document.getElementById('photoPreviewContainer').classList.add('hidden');
-                document.getElementById('photoFileName').innerText = 'No photo attached';
+                document.getElementById('photoFileName').innerText = 'No photo selected';
                 uploadedPhotoBase64 = '';
             } catch (err) {
-                alertBox.className = "mt-4 p-4 rounded-xl font-fun text-xs text-center bg-red-950 border border-red-500 text-red-200";
+                alertBox.className = "mt-4 p-3 rounded-xl font-fun text-xs text-center bg-red-950 border border-red-500 text-red-200";
                 alertBox.innerText = "Error saving entry. Please try again.";
                 alertBox.classList.remove('hidden');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerText = '✨ Submit Contest Entry';
+                submitBtn.innerText = '✨ Register Entry';
             }
         }
 
-        // Automatic Event Stage Schedule Engine for Oct 30, 2026
+        // Event Stage Calculation Engine
         function getEventStage() {
             if (window.appState.timeOverride !== 'auto') {
                 return window.appState.timeOverride;
             }
-            
+
             const now = new Date();
-            const eventYear = 2026;
-            const eventMonth = 9; // October (0-indexed)
-            const eventDay = 30;
+            const isTargetDate = (now.getFullYear() === 2026 && now.getMonth() === 9 && now.getDate() === 30);
 
-            const currentYear = now.getFullYear();
-            const currentMonth = now.getMonth();
-            const currentDay = now.getDate();
-
-            // Date comparisons
-            const isBeforeEventDay = currentYear < eventYear || 
-                (currentYear === eventYear && currentMonth < eventMonth) || 
-                (currentYear === eventYear && currentMonth === eventMonth && currentDay < eventDay);
-
-            const isAfterEventDay = currentYear > eventYear || 
-                (currentYear === eventYear && currentMonth > eventMonth) || 
-                (currentYear === eventYear && currentMonth === eventMonth && currentDay > eventDay);
-
-            if (isBeforeEventDay) {
-                return 'pre';
-            } else if (isAfterEventDay) {
-                return 'post';
-            } else {
-                // Exact Event Day: Oct 30, 2026
-                const totalMins = now.getHours() * 60 + now.getMinutes();
-                // 6:00 PM = 1080 mins
-                // 7:30 PM = 1170 mins
-                if (totalMins < 1080) {
-                    return 'pre';
-                } else if (totalMins >= 1080 && totalMins <= 1170) {
-                    return 'voting';
-                } else {
+            if (!isTargetDate) {
+                if (now.getFullYear() > 2026 || (now.getFullYear() === 2026 && now.getMonth() > 9) || (now.getFullYear() === 2026 && now.getMonth() === 9 && now.getDate() > 30)) {
                     return 'post';
                 }
+                return 'pre';
+            }
+
+            const hours = now.getHours();
+            const mins = now.getMinutes();
+            const totalMins = hours * 60 + mins;
+
+            if (totalMins < 1080) {
+                return 'pre';
+            } else if (totalMins >= 1080 && totalMins <= 1170) {
+                return 'voting';
+            } else {
+                return 'post';
             }
         }
 
@@ -728,38 +635,45 @@
             const votingNotice = document.getElementById('votingNotice');
             const liveWinnerBadge = document.getElementById('liveWinnerBadge');
 
+            if (!statusDot || !statusText) return;
+
             if (stage === 'pre') {
-                statusDot.className = "w-2.5 h-2.5 rounded-full bg-purple-400";
-                statusText.innerText = "Entries Open | Voting Opens Oct 30 @ 6:00 PM";
-                votingNotice.classList.remove('hidden');
-                votingNotice.innerText = "🔒 Voting opens on Oct 30 at 6:00 PM. Preview registered entries below!";
-                liveWinnerBadge.classList.add('hidden');
+                statusDot.className = "w-2 h-2 rounded-full bg-purple-400";
+                statusText.innerText = "Entries Open | Voting Begins Oct 30 @ 6:00 PM";
+                if (votingNotice) {
+                    votingNotice.classList.remove('hidden');
+                    votingNotice.innerText = "🔒 Voting opens Oct 30 between 6:00 PM and 7:30 PM. Preview entries below!";
+                }
+                if (liveWinnerBadge) liveWinnerBadge.classList.add('hidden');
             } else if (stage === 'voting') {
-                statusDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping";
-                statusText.innerText = "🗳️ Voting Live! (Closes strictly at 7:30 PM)";
-                votingNotice.classList.add('hidden');
-                liveWinnerBadge.classList.add('hidden');
+                statusDot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-ping";
+                statusText.innerText = "🗳️ Voting Live! (Closes Oct 30 @ 7:30 PM)";
+                if (votingNotice) votingNotice.classList.add('hidden');
+                if (liveWinnerBadge) liveWinnerBadge.classList.add('hidden');
             } else {
-                statusDot.className = "w-2.5 h-2.5 rounded-full bg-amber-400";
-                statusText.innerText = "🏆 Voting Closed | Winners Published!";
-                votingNotice.classList.remove('hidden');
-                votingNotice.innerText = "🎉 Polling closed at 7:30 PM. Results are published under the Winners tab!";
-                liveWinnerBadge.classList.remove('hidden');
+                statusDot.className = "w-2 h-2 rounded-full bg-amber-400";
+                statusText.innerText = "🏆 Polling Closed | Winners Published!";
+                if (votingNotice) {
+                    votingNotice.classList.remove('hidden');
+                    votingNotice.innerText = "🎉 Polling closed. Results published under the Winners tab!";
+                }
+                if (liveWinnerBadge) liveWinnerBadge.classList.remove('hidden');
             }
         }
 
         function filterVoting(type) {
             window.appState.filter = type;
             document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.className = "filter-btn bg-slate-800 text-slate-300 px-3 py-1.5 rounded-xl border border-slate-700 font-fun text-xs";
+                btn.className = "filter-btn bg-slate-800 text-slate-300 px-3 py-1 rounded-xl border border-slate-700 font-fun text-xs";
             });
             const activeBtn = document.getElementById('filter-' + type);
             if (activeBtn) {
-                activeBtn.className = "filter-btn bg-orange-500 text-slate-950 font-bold px-3 py-1.5 rounded-xl font-fun text-xs";
+                activeBtn.className = "filter-btn bg-orange-500 text-slate-950 font-bold px-3 py-1 rounded-xl font-fun text-xs";
             }
             renderVotingGrid();
         }
 
+        // Render Voting Grid Cards
         function renderVotingGrid() {
             const grid = document.getElementById('votingGrid');
             if (!grid) return;
@@ -774,10 +688,10 @@
 
             if (entries.length === 0) {
                 grid.innerHTML = `
-                    <div class="col-span-full text-center py-12 bg-slate-900/50 rounded-3xl border border-slate-800">
-                        <span class="text-4xl block mb-2">👻</span>
-                        <p class="font-fun text-purple-300 text-sm">No entries registered yet for this category.</p>
-                        <p class="text-xs text-slate-400 mt-1">Be the first to submit an entry under the "Enter Contest" tab!</p>
+                    <div class="col-span-full text-center py-10 bg-slate-900/50 rounded-3xl border border-slate-800">
+                        <span class="text-3xl block mb-2">👻</span>
+                        <p class="font-fun text-purple-300 text-xs">No entries registered yet for this category.</p>
+                        <p class="text-[11px] text-slate-400 mt-1">Be the first to submit an entry under the "Enter Contest" tab!</p>
                     </div>
                 `;
                 return;
@@ -794,49 +708,57 @@
 
             grid.innerHTML = entries.map(entry => {
                 const votesForEntry = (window.appState.votes || []).filter(v => v.entryId === entry.id).length;
-                const userHasVoted = window.appState.userVotes[entry.id];
+                const userVotedCategoriesForThisEntry = categoryOptions.filter(cat => window.appState.userVotes[cat] === entry.id);
 
-                const categoryButtonsHTML = categoryOptions.map(cat => `
-                    <button onclick="castVote('${entry.id}', '${cat}')" 
-                        ${stage !== 'voting' || userHasVoted ? 'disabled' : ''}
-                        class="text-[11px] font-fun px-2.5 py-1.5 rounded-lg border transition ${
-                            userHasVoted === cat 
-                                ? 'bg-orange-500 text-slate-950 font-bold border-orange-400' 
-                                : 'bg-slate-800 text-slate-200 border-slate-700 hover:border-orange-500 disabled:opacity-50 disabled:hover:border-slate-700'
-                        }">
-                        +1 ${cat}
-                    </button>
-                `).join('');
+                const categoryButtonsHTML = categoryOptions.map(cat => {
+                    const isSelectedForThisCat = window.appState.userVotes[cat] === entry.id;
+                    return `
+                        <button onclick="castVote('${entry.id}', '${cat}')" 
+                            ${stage !== 'voting' ? 'disabled' : ''}
+                            class="text-[10px] font-fun px-2 py-1 rounded-lg border transition ${
+                                isSelectedForThisCat 
+                                    ? 'bg-orange-500 text-slate-950 font-bold border-orange-400 shadow-md scale-[1.02]' 
+                                    : 'bg-slate-800 text-slate-200 border-slate-700 hover:border-orange-500 disabled:opacity-50 disabled:hover:border-slate-700'
+                            }">
+                            ${isSelectedForThisCat ? '✓ ' : '+1 '}${cat}
+                        </button>
+                    `;
+                }).join('');
 
                 const defaultAvatar = entry.entryType === 'Trunk' ? '🚗' : '👻';
 
                 return `
-                    <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-4 flex flex-col justify-between shadow-lg relative group">
-                        <div class="absolute top-3 right-3 bg-purple-950/80 border border-purple-500/40 text-purple-300 text-[10px] font-fun px-2.5 py-0.5 rounded-full">
-                            Age: ${entry.ageGroup} yrs
+                    <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg relative group">
+                        <div class="absolute top-2.5 right-2.5 bg-purple-950/80 border border-purple-500/40 text-purple-300 text-[10px] font-fun px-2 py-0.5 rounded-full">
+                            Age: ${entry.ageGroup}
                         </div>
 
                         <div>
-                            <div class="w-full h-36 bg-slate-950 rounded-xl overflow-hidden mb-3 border border-slate-800 flex items-center justify-center">
+                            <div class="w-full h-32 bg-slate-950 rounded-xl overflow-hidden mb-2.5 border border-slate-800 flex items-center justify-center">
                                 ${entry.photo 
                                     ? `<img src="${entry.photo}" class="w-full h-full object-cover" alt="${entry.title}">`
-                                    : `<span class="text-5xl">${defaultAvatar}</span>`
+                                    : `<span class="text-4xl">${defaultAvatar}</span>`
                                 }
                             </div>
 
-                            <span class="text-[10px] uppercase font-fun tracking-wider text-orange-400">${entry.entryType} Entry</span>
-                            <h3 class="font-fun text-lg text-slate-100 leading-snug">${entry.title}</h3>
-                            <p class="text-xs text-purple-300 font-fun mb-3">By: ${entry.nickname}</p>
+                            <span class="text-[9px] uppercase font-fun tracking-wider text-orange-400">${entry.entryType} Entry</span>
+                            <h3 class="font-fun text-base text-slate-100 leading-tight">${entry.title}</h3>
+                            <p class="text-xs text-purple-300 font-fun mb-2">By: ${entry.nickname}</p>
                         </div>
 
-                        <div class="border-t border-slate-700/60 pt-3 mt-2">
-                            <div class="flex justify-between items-center mb-2 text-xs font-fun">
+                        <div class="border-t border-slate-700/60 pt-2 mt-1">
+                            <div class="flex justify-between items-center mb-1.5 text-xs font-fun">
                                 <span class="text-slate-400">Total Votes</span>
-                                <span class="bg-orange-950 text-orange-300 border border-orange-600/50 px-2 py-0.5 rounded-md font-bold">${votesForEntry} 🗳️</span>
+                                <span class="bg-orange-950 text-orange-300 border border-orange-600/50 px-2 py-0.5 rounded-md font-bold text-[11px]">${votesForEntry} 🗳️</span>
                             </div>
 
-                            <p class="text-[10px] font-fun text-slate-400 mb-1">Vote for this entry in a category:</p>
-                            <div class="grid grid-cols-2 gap-1.5">
+                            <p class="text-[10px] font-fun text-slate-400 mb-1 flex justify-between">
+                                <span>${userVotedCategoriesForThisEntry.length > 0 
+                                    ? 'Your Choice: <strong class="text-orange-400">' + userVotedCategoriesForThisEntry.join(', ') + '</strong>' 
+                                    : 'Award 1 vote per category:'}
+                                </span>
+                            </p>
+                            <div class="grid grid-cols-2 gap-1">
                                 ${categoryButtonsHTML}
                             </div>
                         </div>
@@ -848,30 +770,74 @@
         async function castVote(entryId, category) {
             const stage = getEventStage();
             if (stage !== 'voting') {
-                showToast("Voting is only permitted on Oct 30 between 6:00 PM and 7:30 PM!", "🔒");
+                showToast("Voting is permitted Oct 30 between 6:00 PM and 7:30 PM!", "🔒");
                 return;
             }
 
-            if (window.appState.userVotes[entryId]) {
-                showToast("You have already voted for this entry!", "⚠️");
-                return;
+            const currentEntryForCategory = window.appState.userVotes[category];
+
+            if (currentEntryForCategory === entryId) {
+                delete window.appState.userVotes[category];
+                delete window.appState.userVoteDocIds[category];
+                localStorage.setItem('okaloosa_user_category_votes', JSON.stringify(window.appState.userVotes));
+                localStorage.setItem('okaloosa_user_cat_doc_ids', JSON.stringify(window.appState.userVoteDocIds));
+                
+                if (window.removeVoteRecordForCategory) {
+                    await window.removeVoteRecordForCategory(category);
+                } else {
+                    window.appState.votes = (window.appState.votes || []).filter(v => v.category !== category);
+                    localStorage.setItem('okaloosa_votes', JSON.stringify(window.appState.votes));
+                }
+                showToast(`Cleared vote for ${category}.`, '↩️');
+            } 
+            else if (currentEntryForCategory && currentEntryForCategory !== entryId) {
+                if (window.removeVoteRecordForCategory) {
+                    await window.removeVoteRecordForCategory(category);
+                } else {
+                    window.appState.votes = (window.appState.votes || []).filter(v => v.category !== category);
+                }
+
+                const voteObj = { entryId, category, votedAt: new Date().toISOString() };
+                let newDocId = null;
+                if (window.saveVote) {
+                    newDocId = await window.saveVote(voteObj);
+                } else {
+                    voteObj.id = 'vote_' + Date.now();
+                    window.appState.votes.push(voteObj);
+                    localStorage.setItem('okaloosa_votes', JSON.stringify(window.appState.votes));
+                }
+
+                window.appState.userVotes[category] = entryId;
+                if (newDocId) window.appState.userVoteDocIds[category] = newDocId;
+
+                localStorage.setItem('okaloosa_user_category_votes', JSON.stringify(window.appState.userVotes));
+                localStorage.setItem('okaloosa_user_cat_doc_ids', JSON.stringify(window.appState.userVoteDocIds));
+                showToast(`Switched vote for ${category}!`, '🔄');
+            } 
+            else {
+                const voteObj = { entryId, category, votedAt: new Date().toISOString() };
+                let newDocId = null;
+                if (window.saveVote) {
+                    newDocId = await window.saveVote(voteObj);
+                } else {
+                    voteObj.id = 'vote_' + Date.now();
+                    window.appState.votes.push(voteObj);
+                    localStorage.setItem('okaloosa_votes', JSON.stringify(window.appState.votes));
+                }
+
+                window.appState.userVotes[category] = entryId;
+                if (newDocId) window.appState.userVoteDocIds[category] = newDocId;
+
+                localStorage.setItem('okaloosa_user_category_votes', JSON.stringify(window.appState.userVotes));
+                localStorage.setItem('okaloosa_user_cat_doc_ids', JSON.stringify(window.appState.userVoteDocIds));
+                showToast(`Vote submitted for ${category}!`, '✨');
             }
 
-            const voteObj = {
-                entryId,
-                category,
-                votedAt: new Date().toISOString()
-            };
-
-            await window.saveVote(voteObj);
-            window.appState.userVotes[entryId] = category;
-            localStorage.setItem('okaloosa_user_votes', JSON.stringify(window.appState.userVotes));
-
-            showToast(`Vote submitted for ${category}!`, '✨');
             renderVotingGrid();
             renderWinnersPodium();
         }
 
+        // Winner Calculations
         function renderWinnersPodium() {
             const catGrid = document.getElementById('categoryWinnersGrid');
             const ageGrid = document.getElementById('ageGroupWinnersGrid');
@@ -904,25 +870,25 @@
                 });
 
                 return `
-                    <div class="bg-slate-800/90 border-2 border-amber-500/40 rounded-2xl p-4 flex flex-col justify-between shadow-lg">
+                    <div class="bg-slate-800/90 border-2 border-amber-500/40 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
                         <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs font-fun text-amber-400 uppercase tracking-wider flex items-center gap-1">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="text-[11px] font-fun text-amber-400 uppercase tracking-wider flex items-center gap-1">
                                     <span>${cat.icon}</span> ${cat.name}
                                 </span>
-                                <span class="bg-amber-500 text-slate-950 text-[10px] font-bold font-fun px-2 py-0.5 rounded-full">WINNER</span>
+                                <span class="bg-amber-500 text-slate-950 text-[9px] font-bold font-fun px-2 py-0.5 rounded-full">WINNER</span>
                             </div>
 
                             ${bestEntry ? `
-                                <h4 class="font-fun text-lg text-white mb-1">${bestEntry.title}</h4>
+                                <h4 class="font-fun text-base text-white mb-0.5">${bestEntry.title}</h4>
                                 <p class="text-xs text-purple-300 font-fun">Participant: ${bestEntry.nickname} (${bestEntry.ageGroup} yrs)</p>
                             ` : `
-                                <p class="text-xs text-slate-400 font-fun italic py-2">TBD / Awaiting Votes</p>
+                                <p class="text-xs text-slate-400 font-fun italic py-1">TBD / Awaiting Votes</p>
                             `}
                         </div>
 
-                        <div class="border-t border-slate-700 pt-2 mt-3 flex justify-between items-center text-xs font-fun">
-                            <span class="text-slate-400">Winning Votes</span>
+                        <div class="border-t border-slate-700 pt-1.5 mt-2 flex justify-between items-center text-xs font-fun">
+                            <span class="text-slate-400">Winning Tallies</span>
                             <span class="text-amber-300 font-bold">${maxVotes > -1 ? maxVotes : 0} Votes</span>
                         </div>
                     </div>
@@ -944,24 +910,24 @@
                 });
 
                 return `
-                    <div class="bg-slate-800/90 border border-purple-500/40 rounded-2xl p-4 flex flex-col justify-between shadow-lg">
+                    <div class="bg-slate-800/90 border border-purple-500/40 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg">
                         <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs font-fun text-purple-300 uppercase tracking-wider">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="text-[11px] font-fun text-purple-300 uppercase tracking-wider">
                                     👑 ${group} Years Division
                                 </span>
-                                <span class="bg-purple-600 text-white text-[10px] font-bold font-fun px-2 py-0.5 rounded-full">TOP CHAMP</span>
+                                <span class="bg-purple-600 text-white text-[9px] font-bold font-fun px-2 py-0.5 rounded-full">TOP CHAMP</span>
                             </div>
 
                             ${topEntry ? `
-                                <h4 class="font-fun text-lg text-white mb-1">${topEntry.title}</h4>
+                                <h4 class="font-fun text-base text-white mb-0.5">${topEntry.title}</h4>
                                 <p class="text-xs text-purple-200 font-fun">By: ${topEntry.nickname}</p>
                             ` : `
-                                <p class="text-xs text-slate-400 font-fun italic py-2">TBD / Awaiting Votes</p>
+                                <p class="text-xs text-slate-400 font-fun italic py-1">TBD / Awaiting Votes</p>
                             `}
                         </div>
 
-                        <div class="border-t border-slate-700 pt-2 mt-3 flex justify-between items-center text-xs font-fun">
+                        <div class="border-t border-slate-700 pt-1.5 mt-2 flex justify-between items-center text-xs font-fun">
                             <span class="text-slate-400">Total Tally</span>
                             <span class="text-purple-300 font-bold">${maxTotalVotes > -1 ? maxTotalVotes : 0} Votes</span>
                         </div>
@@ -970,6 +936,7 @@
             }).join('');
         }
 
+        // Confetti Trigger
         function triggerConfetti() {
             if (typeof confetti === 'function') {
                 confetti({
@@ -981,42 +948,52 @@
             }
         }
 
+        // QR Code Generator
         function initQRCodes() {
-            const baseUrl = window.TARGET_EVENT_URL || "https://sipesj86-sudo.github.io/okaloosa-trunk-treat-/";
-
-            const regUrl = baseUrl.endsWith('/') ? baseUrl + '#register' : baseUrl + '/#register';
-            const voteUrl = baseUrl.endsWith('/') ? baseUrl + '#vote' : baseUrl + '/#vote';
+            const targetUrl = window.TARGET_EVENT_URL || "https://sipesj86-sudo.github.io/okaloosa-trunk-treat-/";
+            const regUrl = targetUrl + "#register";
+            const voteUrl = targetUrl + "#vote";
 
             const regEl = document.getElementById('qrcode-register');
             const voteEl = document.getElementById('qrcode-vote');
 
             if (regEl) {
                 regEl.innerHTML = '';
-                new QRCode(regEl, {
-                    text: regUrl,
-                    width: 120,
-                    height: 120,
-                    colorDark : "#0f172a",
-                    colorLight : "#ffffff",
-                    correctLevel : QRCode.CorrectLevel.H
-                });
+                if (typeof QRCode !== 'undefined') {
+                    new QRCode(regEl, {
+                        text: regUrl,
+                        width: 110,
+                        height: 110,
+                        colorDark : "#0f172a",
+                        colorLight : "#ffffff",
+                        correctLevel : QRCode.CorrectLevel.H
+                    });
+                } else {
+                    regEl.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=110x110&data=${encodeURIComponent(regUrl)}" alt="Register QR">`;
+                }
             }
 
             if (voteEl) {
                 voteEl.innerHTML = '';
-                new QRCode(voteEl, {
-                    text: voteUrl,
-                    width: 120,
-                    height: 120,
-                    colorDark : "#0f172a",
-                    colorLight : "#ffffff",
-                    correctLevel : QRCode.CorrectLevel.H
-                });
+                if (typeof QRCode !== 'undefined') {
+                    new QRCode(voteEl, {
+                        text: voteUrl,
+                        width: 110,
+                        height: 110,
+                        colorDark : "#0f172a",
+                        colorLight : "#ffffff",
+                        correctLevel : QRCode.CorrectLevel.H
+                    });
+                } else {
+                    voteEl.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=110x110&data=${encodeURIComponent(voteUrl)}" alt="Vote QR">`;
+                }
             }
         }
 
+        // Host Control Panel Helpers
         function toggleAdminModal() {
-            document.getElementById('adminModal').classList.toggle('hidden');
+            const modal = document.getElementById('adminModal');
+            if (modal) modal.classList.toggle('hidden');
         }
 
         function handleTimeOverrideChange() {
@@ -1026,6 +1003,37 @@
             renderWinnersPodium();
         }
 
+        function generateSampleEntries() {
+            const samples = [
+                { id: 's1', nickname: 'The Skeleton Crew', title: 'Graveyard Express Trunk', entryType: 'Trunk', ageGroup: 'Adults', photo: '', category: 'Best Overall Trunk' },
+                { id: 's2', nickname: 'Little Witch Mia', title: 'Glitter Witch', entryType: 'Costume', ageGroup: '3-0', photo: '', category: 'Spookiest Costume' },
+                { id: 's3', nickname: 'Leo the Dinosaur', title: 'Inflatable T-Rex', entryType: 'Costume', ageGroup: '6-4', photo: '', category: 'Funniest Costume' },
+                { id: 's4', nickname: 'Crafty Chloe', title: 'Cardboard Robot', entryType: 'Costume', ageGroup: '12-7', photo: '', category: 'Most Creative DIY' },
+                { id: 's5', nickname: 'The Addams Family', title: 'Haunted Mansion SUV', entryType: 'Trunk', ageGroup: 'Adults', photo: '', category: 'Best Group / Family' },
+                { id: 's6', nickname: 'Teen Ghoul Jake', title: 'Shadow Reaper', entryType: 'Costume', ageGroup: '17-13', photo: '', category: 'Spookiest Costume' }
+            ];
+            window.appState.entries = samples;
+            localStorage.setItem('okaloosa_entries', JSON.stringify(samples));
+            renderVotingGrid();
+            renderWinnersPodium();
+            showToast('Sample entries loaded!', '➕');
+        }
+
+        function resetData() {
+            window.appState.entries = [];
+            window.appState.votes = [];
+            window.appState.userVotes = {};
+            window.appState.userVoteDocIds = {};
+            localStorage.removeItem('okaloosa_entries');
+            localStorage.removeItem('okaloosa_votes');
+            localStorage.removeItem('okaloosa_user_category_votes');
+            localStorage.removeItem('okaloosa_user_cat_doc_ids');
+            renderVotingGrid();
+            renderWinnersPodium();
+            showToast('Data reset complete.', '🗑️');
+        }
+
+        // Navigation Hash Handler
         function handleHashRouting() {
             const hash = window.location.hash.replace('#', '');
             if (['flyer', 'register', 'vote', 'winners'].includes(hash)) {
@@ -1033,7 +1041,15 @@
             }
         }
 
-        window.onload = function() {
+        // App Initialization
+        function initializeApplication() {
+            window.appState.entries = JSON.parse(localStorage.getItem('okaloosa_entries') || '[]');
+            window.appState.votes = JSON.parse(localStorage.getItem('okaloosa_votes') || '[]');
+
+            if (window.appState.entries.length === 0) {
+                generateSampleEntries();
+            }
+
             initQRCodes();
             updateScheduleStatus();
             handleHashRouting();
@@ -1041,9 +1057,75 @@
             renderWinnersPodium();
 
             setInterval(updateScheduleStatus, 30000);
-        };
+        }
 
+        window.addEventListener('DOMContentLoaded', initializeApplication);
+        window.addEventListener('load', initializeApplication);
         window.onhashchange = handleHashRouting;
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, addDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        try {
+            if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                const firebaseConfig = JSON.parse(__firebase_config);
+                const app = initializeApp(firebaseConfig);
+                const auth = getAuth(app);
+                const db = getFirestore(app);
+                window.appState.db = db;
+
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                const entriesRef = collection(db, 'artifacts', window.appState.appId, 'public', 'data', 'entries');
+                const votesRef = collection(db, 'artifacts', window.appState.appId, 'public', 'data', 'votes');
+
+                onSnapshot(entriesRef, (snapshot) => {
+                    const items = [];
+                    snapshot.forEach((doc) => items.push({ id: doc.id, ...doc.data() }));
+                    if (items.length > 0) window.appState.entries = items;
+                    renderVotingGrid();
+                    renderWinnersPodium();
+                });
+
+                onSnapshot(votesRef, (snapshot) => {
+                    const votesList = [];
+                    snapshot.forEach((doc) => votesList.push({ id: doc.id, ...doc.data() }));
+                    if (votesList.length > 0) window.appState.votes = votesList;
+                    renderVotingGrid();
+                    renderWinnersPodium();
+                });
+
+                window.saveEntry = async function(newEntry) {
+                    const docRef = await addDoc(entriesRef, newEntry);
+                    newEntry.id = docRef.id;
+                    return docRef.id;
+                };
+
+                window.saveVote = async function(voteObj) {
+                    const docRef = await addDoc(votesRef, voteObj);
+                    return docRef.id;
+                };
+
+                window.removeVoteRecordForCategory = async function(category) {
+                    const userVoteId = window.appState.userVoteDocIds?.[category];
+                    if (userVoteId) {
+                        try {
+                            const voteDocRef = doc(db, 'artifacts', window.appState.appId, 'public', 'data', 'votes', userVoteId);
+                            await deleteDoc(voteDocRef);
+                        } catch (e) {}
+                    }
+                };
+            }
+        } catch (e) {
+            console.log("Running in offline local storage fallback mode.");
+        }
     </script>
 </body>
 </html>

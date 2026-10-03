@@ -153,7 +153,7 @@
                         OKALOOSA TRAIL TRUNK OR TREAT
                     </h2>
                     <p class="font-fun text-sm md:text-lg text-purple-300">
-                        Costume Contest & Decorated Trunk Decorating Competition!
+                        Costume Contest & Trunk Decorating Competition!
                     </p>
                 </div>
 
@@ -500,6 +500,27 @@
     </div>
 
     <script>
+        // Global Application State Initialization
+        window.appState = {
+            entries: [],
+            votes: [],
+            userVotes: JSON.parse(localStorage.getItem('okaloosa_user_category_votes') || '{}'),
+            userVoteDocIds: JSON.parse(localStorage.getItem('okaloosa_user_cat_doc_ids') || '{}'),
+            currentTab: 'flyer',
+            filter: 'all',
+            timeOverride: 'auto',
+            appId: 'okaloosa-trunk-treat-6th'
+        };
+
+        // Toast Notification Helper
+        function showToast(message, emoji = 'ℹ️') {
+            const toast = document.getElementById('toastMessage');
+            if (!toast) return;
+            toast.innerText = `${emoji} ${message}`;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
+
         // Tab Navigation
         function switchTab(tabId) {
             window.appState.currentTab = tabId;
@@ -801,6 +822,7 @@
             const currentEntryForCategory = window.appState.userVotes[category];
 
             if (currentEntryForCategory === entryId) {
+                // Toggle off vote
                 delete window.appState.userVotes[category];
                 delete window.appState.userVoteDocIds[category];
                 localStorage.setItem('okaloosa_user_category_votes', JSON.stringify(window.appState.userVotes));
@@ -815,6 +837,7 @@
                 showToast(`Cleared vote for ${category}.`, '↩️');
             } 
             else if (currentEntryForCategory && currentEntryForCategory !== entryId) {
+                // Switch vote from previous entry
                 if (window.removeVoteRecordForCategory) {
                     await window.removeVoteRecordForCategory(category);
                 } else {
@@ -839,6 +862,7 @@
                 showToast(`Switched vote for ${category}!`, '🔄');
             } 
             else {
+                // Brand new vote
                 const voteObj = { entryId, category, votedAt: new Date().toISOString() };
                 let newDocId = null;
                 if (window.saveVote) {
@@ -846,6 +870,21 @@
                 } else {
                     voteObj.id = 'vote_' + Date.now();
                     window.appState.votes.push(voteObj);
+                    localStorage.setItem('okaloosa_votes', JSON.stringify(window.appState.votes));
+                }
+
+                window.appState.userVotes[category] = entryId;
+                if (newDocId) window.appState.userVoteDocIds[category] = newDocId;
+
+                localStorage.setItem('okaloosa_user_category_votes', JSON.stringify(window.appState.userVotes));
+                localStorage.setItem('okaloosa_user_cat_doc_ids', JSON.stringify(window.appState.userVoteDocIds));
+                showToast(`Cast vote for ${category}!`, '✨');
+            }
+
+            renderVotingGrid();
+            renderWinnersPodium();
+        }
+
         // Winner Calculations & Reveal Guard
         function renderWinnersPodium() {
             const lockedView = document.getElementById('winnersLockedView');
@@ -974,7 +1013,7 @@
 
         // QR Code Generator
         function initQRCodes() {
-            const targetUrl = window.TARGET_EVENT_URL || "https://sipesj86-sudo.github.io/okaloosa-trunk-treat-/";
+            const targetUrl = "https://sipesj86-sudo.github.io/okaloosa-trunk-treat-/";
             const regUrl = targetUrl + "#register";
             const voteUrl = targetUrl + "#vote";
 

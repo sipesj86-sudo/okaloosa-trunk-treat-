@@ -177,7 +177,6 @@
                     </div>
                 </div>
 
-                <!-- QR Codes Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
                     <!-- ENTRY QR CARD -->
                     <div class="bg-slate-800/90 border-2 border-purple-500/50 rounded-2xl p-4 text-center flex flex-col items-center justify-between">
@@ -210,7 +209,6 @@
                     </div>
                 </div>
 
-                <!-- Age Brackets & Categories -->
                 <div class="bg-slate-950/80 border border-slate-700 rounded-2xl p-3 text-center">
                     <h4 class="font-fun text-amber-400 text-xs mb-1.5 uppercase tracking-wide">🏆 Age Divisions & Award Categories</h4>
                     <div class="flex flex-wrap justify-center gap-1.5 text-[11px] mb-2">
@@ -361,7 +359,7 @@
                     <span class="text-3xl">🗳️</span>
                     <h2 class="font-spooky text-2xl md:text-3xl text-orange-400 tracking-wide mt-0.5">Official Contest Voting Poll</h2>
                     <p class="text-xs text-slate-300 font-fun max-w-lg mx-auto mt-1">
-                        Select an entry to award 1 vote per category! Voting window is strictly <strong>6:00 PM to 7:30 PM on Oct 30, 2026</strong>.
+                        Award <strong>1 vote per category for EACH age group division</strong>! Voting window is strictly <strong>6:00 PM to 7:30 PM on Oct 30, 2026</strong>.
                     </p>
 
                     <!-- Filter Tabs -->
@@ -504,8 +502,9 @@
         window.appState = {
             entries: [],
             votes: [],
-            userVotes: JSON.parse(localStorage.getItem('okaloosa_user_category_votes') || '{}'),
-            userVoteDocIds: JSON.parse(localStorage.getItem('okaloosa_user_cat_doc_ids') || '{}'),
+            // Key format: `${category}___${ageGroup}` -> entryId
+            userVotes: JSON.parse(localStorage.getItem('okaloosa_user_age_cat_votes') || '{}'),
+            userVoteDocIds: JSON.parse(localStorage.getItem('okaloosa_user_age_cat_doc_ids') || '{}'),
             currentTab: 'flyer',
             filter: 'all',
             timeOverride: 'auto',
@@ -753,12 +752,18 @@
 
             grid.innerHTML = entries.map(entry => {
                 const votesForEntry = (window.appState.votes || []).filter(v => v.entryId === entry.id).length;
-                const userVotedCategoriesForThisEntry = categoryOptions.filter(cat => window.appState.userVotes[cat] === entry.id);
+                
+                // Track user votes specific to this entry's age group division
+                const userVotedCategoriesForThisEntry = categoryOptions.filter(cat => {
+                    const key = `${cat}___${entry.ageGroup}`;
+                    return window.appState.userVotes[key] === entry.id;
+                });
 
                 const categoryButtonsHTML = categoryOptions.map(cat => {
-                    const isSelectedForThisCat = window.appState.userVotes[cat] === entry.id;
+                    const voteKey = `${cat}___${entry.ageGroup}`;
+                    const isSelectedForThisCat = window.appState.userVotes[voteKey] === entry.id;
                     return `
-                        <button onclick="castVote('${entry.id}', '${cat}')" 
+                        <button onclick="castVote('${entry.id}', '${cat}', '${entry.ageGroup}')" 
                             ${stage !== 'voting' ? 'disabled' : ''}
                             class="text-[10px] font-fun px-2 py-1 rounded-lg border transition ${
                                 isSelectedForThisCat 
@@ -797,11 +802,10 @@
                                 <span class="bg-orange-950 text-orange-300 border border-orange-600/50 px-2 py-0.5 rounded-md font-bold text-[11px]">${votesForEntry} 🗳️</span>
                             </div>
 
-                            <p class="text-[10px] font-fun text-slate-400 mb-1 flex justify-between">
-                                <span>${userVotedCategoriesForThisEntry.length > 0 
-                                    ? 'Your Choice: <strong class="text-orange-400">' + userVotedCategoriesForThisEntry.join(', ') + '</strong>' 
-                                    : 'Award 1 vote per category:'}
-                                </span>
+                            <p class="text-[10px] font-fun text-slate-400 mb-1">
+                                ${userVotedCategoriesForThisEntry.length > 0 
+                                    ? 'Your Choice (' + entry.ageGroup + ' Division): <strong class="text-orange-400">' + userVotedCategoriesForThisEntry.join(', ') + '</strong>' 
+                                    : 'Award 1 vote per category (' + entry.ageGroup + ' Division):'}
                             </p>
                             <div class="grid grid-cols-2 gap-1">
                                 ${categoryButtonsHTML}
@@ -812,39 +816,40 @@
             }).join('');
         }
 
-        async function castVote(entryId, category) {
+        async function castVote(entryId, category, ageGroup) {
             const stage = getEventStage();
             if (stage !== 'voting') {
                 showToast("Voting is permitted Oct 30 between 6:00 PM and 7:30 PM!", "🔒");
                 return;
             }
 
-            const currentEntryForCategory = window.appState.userVotes[category];
+            const voteKey = `${category}___${ageGroup}`;
+            const currentEntryForCategoryAndAge = window.appState.userVotes[voteKey];
 
-            if (currentEntryForCategory === entryId) {
+            if (currentEntryForCategoryAndAge === entryId) {
                 // Toggle off vote
-                delete window.appState.userVotes[category];
-                delete window.appState.userVoteDocIds[category];
-                localStorage.setItem('okaloosa_user_category_votes', JSON.stringify(window.appState.userVotes));
-                localStorage.setItem('okaloosa_user_cat_doc_ids', JSON.stringify(window.appState.userVoteDocIds));
+                delete window.appState.userVotes[voteKey];
+                delete window.appState.userVoteDocIds[voteKey];
+                localStorage.setItem('okaloosa_user_age_cat_votes', JSON.stringify(window.appState.userVotes));
+                localStorage.setItem('okaloosa_user_age_cat_doc_ids', JSON.stringify(window.appState.userVoteDocIds));
                 
-                if (window.removeVoteRecordForCategory) {
-                    await window.removeVoteRecordForCategory(category);
+                if (window.removeVoteRecordForCategoryAge) {
+                    await window.removeVoteRecordForCategoryAge(category, ageGroup);
                 } else {
-                    window.appState.votes = (window.appState.votes || []).filter(v => v.category !== category);
+                    window.appState.votes = (window.appState.votes || []).filter(v => !(v.category === category && v.ageGroup === ageGroup));
                     localStorage.setItem('okaloosa_votes', JSON.stringify(window.appState.votes));
                 }
-                showToast(`Cleared vote for ${category}.`, '↩️');
+                showToast(`Cleared vote for ${category} (${ageGroup} Division).`, '↩️');
             } 
-            else if (currentEntryForCategory && currentEntryForCategory !== entryId) {
-                // Switch vote from previous entry
-                if (window.removeVoteRecordForCategory) {
-                    await window.removeVoteRecordForCategory(category);
+            else if (currentEntryForCategoryAndAge && currentEntryForCategoryAndAge !== entryId) {
+                // Switch vote from previous entry in this age group
+                if (window.removeVoteRecordForCategoryAge) {
+                    await window.removeVoteRecordForCategoryAge(category, ageGroup);
                 } else {
-                    window.appState.votes = (window.appState.votes || []).filter(v => v.category !== category);
+                    window.appState.votes = (window.appState.votes || []).filter(v => !(v.category === category && v.ageGroup === ageGroup));
                 }
 
-                const voteObj = { entryId, category, votedAt: new Date().toISOString() };
+                const voteObj = { entryId, category, ageGroup, votedAt: new Date().toISOString() };
                 let newDocId = null;
                 if (window.saveVote) {
                     newDocId = await window.saveVote(voteObj);
@@ -854,16 +859,16 @@
                     localStorage.setItem('okaloosa_votes', JSON.stringify(window.appState.votes));
                 }
 
-                window.appState.userVotes[category] = entryId;
-                if (newDocId) window.appState.userVoteDocIds[category] = newDocId;
+                window.appState.userVotes[voteKey] = entryId;
+                if (newDocId) window.appState.userVoteDocIds[voteKey] = newDocId;
 
-                localStorage.setItem('okaloosa_user_category_votes', JSON.stringify(window.appState.userVotes));
-                localStorage.setItem('okaloosa_user_cat_doc_ids', JSON.stringify(window.appState.userVoteDocIds));
-                showToast(`Switched vote for ${category}!`, '🔄');
+                localStorage.setItem('okaloosa_user_age_cat_votes', JSON.stringify(window.appState.userVotes));
+                localStorage.setItem('okaloosa_user_age_cat_doc_ids', JSON.stringify(window.appState.userVoteDocIds));
+                showToast(`Switched vote for ${category} (${ageGroup} Division)!`, '🔄');
             } 
             else {
                 // Brand new vote
-                const voteObj = { entryId, category, votedAt: new Date().toISOString() };
+                const voteObj = { entryId, category, ageGroup, votedAt: new Date().toISOString() };
                 let newDocId = null;
                 if (window.saveVote) {
                     newDocId = await window.saveVote(voteObj);
@@ -873,12 +878,12 @@
                     localStorage.setItem('okaloosa_votes', JSON.stringify(window.appState.votes));
                 }
 
-                window.appState.userVotes[category] = entryId;
-                if (newDocId) window.appState.userVoteDocIds[category] = newDocId;
+                window.appState.userVotes[voteKey] = entryId;
+                if (newDocId) window.appState.userVoteDocIds[voteKey] = newDocId;
 
-                localStorage.setItem('okaloosa_user_category_votes', JSON.stringify(window.appState.userVotes));
-                localStorage.setItem('okaloosa_user_cat_doc_ids', JSON.stringify(window.appState.userVoteDocIds));
-                showToast(`Cast vote for ${category}!`, '✨');
+                localStorage.setItem('okaloosa_user_age_cat_votes', JSON.stringify(window.appState.userVotes));
+                localStorage.setItem('okaloosa_user_age_cat_doc_ids', JSON.stringify(window.appState.userVoteDocIds));
+                showToast(`Cast vote for ${category} (${ageGroup} Division)!`, '✨');
             }
 
             renderVotingGrid();
@@ -1089,8 +1094,8 @@
             window.appState.userVoteDocIds = {};
             localStorage.removeItem('okaloosa_entries');
             localStorage.removeItem('okaloosa_votes');
-            localStorage.removeItem('okaloosa_user_category_votes');
-            localStorage.removeItem('okaloosa_user_cat_doc_ids');
+            localStorage.removeItem('okaloosa_user_age_cat_votes');
+            localStorage.removeItem('okaloosa_user_age_cat_doc_ids');
             renderVotingGrid();
             renderWinnersPodium();
             showToast('Data reset complete.', '🗑️');
@@ -1176,8 +1181,9 @@
                     return docRef.id;
                 };
 
-                window.removeVoteRecordForCategory = async function(category) {
-                    const userVoteId = window.appState.userVoteDocIds?.[category];
+                window.removeVoteRecordForCategoryAge = async function(category, ageGroup) {
+                    const voteKey = `${category}___${ageGroup}`;
+                    const userVoteId = window.appState.userVoteDocIds?.[voteKey];
                     if (userVoteId) {
                         try {
                             const voteDocRef = doc(db, 'artifacts', window.appState.appId, 'public', 'data', 'votes', userVoteId);

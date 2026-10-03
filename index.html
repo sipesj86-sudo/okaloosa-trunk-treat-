@@ -55,45 +55,78 @@
         @media print {
             @page {
                 size: letter portrait;
-                margin: 0.3in;
+                margin: 0.25in;
             }
-            body { 
+            html, body { 
                 background: white !important; 
                 color: black !important;
-                font-size: 11px !important;
+                font-size: 10px !important;
+                height: 100% !important;
+                overflow: hidden !important;
             }
             .no-print { display: none !important; }
+            header, nav { display: none !important; }
+            main { 
+                padding: 0 !important; 
+                margin: 0 !important; 
+                max-width: 100% !important; 
+            }
+
             .printable-area { 
                 border: 2px solid #000 !important; 
                 box-shadow: none !important; 
                 color: black !important; 
                 background: white !important;
-                padding: 1rem !important;
+                padding: 0.5rem 0.75rem !important;
                 margin: 0 !important;
+                page-break-inside: avoid !important;
+                border-radius: 12px !important;
             }
             .printable-area * {
                 color: black !important;
                 text-shadow: none !important;
             }
             .printable-area h2 {
-                font-size: 2.2rem !important;
+                font-size: 1.75rem !important;
                 line-height: 1.1 !important;
                 color: #d97706 !important;
+                margin-bottom: 2px !important;
             }
             .printable-area .bg-slate-800\/90, 
             .printable-area .bg-slate-950\/80,
             .printable-area .bg-gradient-to-r {
                 background: #f8fafc !important;
                 border: 1px solid #cbd5e1 !important;
+                padding: 0.35rem 0.5rem !important;
+                margin-bottom: 0.35rem !important;
             }
+
+            /* FORCE 2-COLUMN DISPLAY IN PRINT FOR QR CARDS */
+            .printable-area .grid.grid-cols-1.md\:grid-cols-2 {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 0.4rem !important;
+                margin-bottom: 0.35rem !important;
+            }
+
+            .printable-area .grid.grid-cols-2.md\:grid-cols-3 {
+                display: grid !important;
+                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+                gap: 2px !important;
+                font-size: 9px !important;
+            }
+
             .qr-box-print {
                 background: #ffffff !important;
-                border: 2px solid #000000 !important;
-                padding: 4px !important;
+                border: 1.5px solid #000000 !important;
+                padding: 3px !important;
+                margin-bottom: 2px !important;
             }
             .qr-box-print img, .qr-box-print canvas {
-                max-width: 110px !important;
-                max-height: 110px !important;
+                max-width: 90px !important;
+                max-height: 90px !important;
+                width: 90px !important;
+                height: 90px !important;
             }
         }
     </style>
@@ -158,8 +191,8 @@
                 </div>
 
                 <!-- Schedule Banner -->
-                <div class="bg-gradient-to-r from-purple-900/80 via-slate-800 to-orange-900/80 border border-amber-400/50 rounded-2xl p-2.5 mb-5 text-center shadow-md">
-                    <div class="flex flex-col md:flex-row items-center justify-around gap-1.5 font-fun text-xs md:text-sm">
+                <div class="bg-gradient-to-r from-purple-900/80 via-slate-800 to-orange-900/80 border border-amber-400/50 rounded-2xl p-2 mb-3 text-center shadow-md">
+                    <div class="flex flex-col md:flex-row items-center justify-around gap-1 font-fun text-xs md:text-sm">
                         <div class="flex items-center gap-1.5">
                             <span class="text-base">📝</span>
                             <span><strong>Registration Open:</strong> Submit before 6:00 PM</span>
@@ -174,6 +207,38 @@
                             <span class="text-base">🏆</span>
                             <span><strong>Winners Announced:</strong> 7:30 PM</span>
                         </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                    <!-- ENTRY QR CARD -->
+                    <div class="bg-slate-800/90 border-2 border-purple-500/50 rounded-2xl p-3 text-center flex flex-col items-center justify-between">
+                        <div class="bg-purple-600 text-white font-fun text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full mb-1">
+                            Step 1: Enter Contest
+                        </div>
+                        <h3 class="font-fun text-base text-purple-300 mb-0.5">Register Your Costume or Trunk</h3>
+                        <p class="text-[11px] text-slate-300 mb-2">Scan QR code to submit your entry before 6:00 PM!</p>
+                        
+                        <!-- QR Container -->
+                        <div class="qr-box-print bg-white p-2 rounded-xl shadow-lg border-2 border-purple-300 mb-1 flex justify-center">
+                            <div id="qrcode-register"></div>
+                        </div>
+                        <span class="text-[9px] text-purple-300 font-mono">Scan on phone to enter</span>
+                    </div>
+
+                    <!-- VOTING QR CARD -->
+                    <div class="bg-slate-800/90 border-2 border-orange-500/50 rounded-2xl p-3 text-center flex flex-col items-center justify-between">
+                        <div class="bg-orange-500 text-slate-950 font-fun text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full mb-1">
+                            Step 2: Cast Your Votes
+                        </div>
+                        <h3 class="font-fun text-base text-orange-400 mb-0.5">Vote For Favorites (6p-7:30p)</h3>
+                        <p class="text-[11px] text-slate-300 mb-2">Walk the trail, preview entries, then scan to vote!</p>
+                        
+                        <!-- QR Container -->
+                        <div class="qr-box-print bg-white p-2 rounded-xl shadow-lg border-2 border-orange-300 mb-1 flex justify-center">
+                            <div id="qrcode-vote"></div>
+                        </div>
+                        <span class="text-[9px] text-orange-300 font-mono">Polls close strictly at 7:30 PM</span>
                     </div>
                 </div>
 
